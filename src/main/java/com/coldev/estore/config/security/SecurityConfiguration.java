@@ -16,8 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
-
-
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity, DefaultAuthenticationEventPublisher authenticationEventPublisher) throws Exception {
         return null;
