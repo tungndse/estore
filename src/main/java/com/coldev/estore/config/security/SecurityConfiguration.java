@@ -6,6 +6,7 @@ import com.coldev.estore.config.security.filter.CustomAuthorizationFilter;
 import com.coldev.estore.config.security.user.EstoreUserDetailService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfiguration {
 
+    @Autowired
     EstoreUserDetailService userDetailService;
     String[] permittedApiList = {
             "/api/v1/auth/login",

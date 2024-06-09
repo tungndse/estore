@@ -18,9 +18,7 @@ public class AuthServiceImpl implements AuthService {
         LoginResponse loginResponse;
         String username = loginRequest.getUsername();
         Account account;
-
-
-
+        
 
         return null;
     }

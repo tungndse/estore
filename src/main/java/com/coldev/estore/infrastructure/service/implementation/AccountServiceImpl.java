@@ -21,7 +21,9 @@ public class AccountServiceImpl implements AccountService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AccountServiceImpl(AuthenticationManager authenticationManager, AccountRepository accountRepository) {
+    public AccountServiceImpl(
+            AuthenticationManager authenticationManager,
+            AccountRepository accountRepository) {
         this.authenticationManager = authenticationManager;
         this.accountRepository = accountRepository;
     }
