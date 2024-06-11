@@ -20,10 +20,10 @@ import com.coldev.estore.infrastructure.repository.AccountRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,24 +45,57 @@ public class AuthServiceImpl implements AuthService {
     @Value("${jwt.secretKey}")
     static String secret = "chainblade";
     private Algorithm algorithm;
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtService jwtService;
 
-    @Autowired
-    private HttpServletRequest request;
+    // BEANS
+    private final AccountService accountService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final HttpServletRequest request;
+    private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private AccountRepository accountRepository;
+    public AuthServiceImpl(AccountService accountService, AuthenticationManager authenticationManager, JwtService jwtService, HttpServletRequest request, AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
+        this.accountService = accountService;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.request = request;
+        this.accountRepository = accountRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    @Override
+    public LoginResponse requestLogin(LoginRequest loginRequest) throws ExecutionException, InterruptedException {
 
-    public LoginResponse login(LoginRequest loginRequest) throws ExecutionException, InterruptedException {
-        return accountService.login(loginRequest);
+        LoginResponse loginResponse;
+        String username = loginRequest.getUsername();
+
+        if (!loginRequest.isLoginWithEmail()) {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+            );
+
+            /*
+            The SecurityContextHolder is where Spring Security stores the details of who is authenticated.
+            Spring Security does not care how the SecurityContextHolder is populated.
+            If it contains a value, it is used as the currently authenticated user.
+             */
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            EstoreUserPrincipal userPrincipal = (EstoreUserPrincipal) authentication.getPrincipal();
+            String accessToken = jwtService.createAccessToken(userPrincipal);
+            String refreshToken = jwtService.createRefreshToken(userPrincipal);
+            Account account = accountService.getAccountByUsername(username);
+
+            loginResponse = LoginResponse.builder()
+                    .accountId(account.getId()).role(account.getRole())
+                    .accessToken(accessToken).refreshToken(refreshToken)
+                    .build();
+
+        } else { // CASE: Login with email, not supported yet
+            loginResponse = null;
+        }
+
+        return loginResponse;
     }
 
     public String getNewAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -123,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
             authorizationHeader = authorizationHeader.substring("Bearer ".length());
             roleClaim = jwtService.decodeJWT(authorizationHeader).getClaim("roles");
-            String roleString = roleClaim.toString().replace("\"","")
+            String roleString = roleClaim.toString().replace("\"", "")
                     .replace("[", "").replace("]", "");
             role = AccountRole.valueOf(roleString);
         } else throw new BadRequestException(MessageDictionary.BAD_REQUEST);

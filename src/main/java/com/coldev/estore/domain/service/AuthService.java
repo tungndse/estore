@@ -15,7 +15,7 @@ public interface AuthService {
 
     String getNewAccessToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    LoginResponse login(LoginRequest loginRequest) throws ExecutionException, InterruptedException;
+    LoginResponse requestLogin(LoginRequest loginRequest) throws ExecutionException, InterruptedException;
 
     Long retrieveTokenizedAccountId() throws IOException, BadRequestException, com.coldev.estore.config.exception.general.BadRequestException;
 

@@ -2,7 +2,6 @@ package com.coldev.estore.config.security.user;
 
 import com.coldev.estore.domain.entity.Account;
 import com.coldev.estore.domain.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +21,7 @@ public class EstoreUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account = accountService.findAccountByUsername(username);
+        Account account = accountService.getAccountByUsername(username);
         return EstoreUserPrincipal.userBuild(account);
     }
 }

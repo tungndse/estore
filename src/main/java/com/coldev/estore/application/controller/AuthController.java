@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,16 +28,17 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private final JwtService jwtService;
     private final AuthService authService;
     private final HttpServletRequest request;
     private final HttpServletResponse response;
+    private final JwtService jwtService;
 
-    public AuthController(JwtService jwtService, AuthService authService, HttpServletRequest request, HttpServletResponse response) {
-        this.jwtService = jwtService;
+    public AuthController(AuthService authService,
+                          HttpServletRequest request, HttpServletResponse response, JwtService jwtService) {
         this.authService = authService;
         this.request = request;
         this.response = response;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/login")
@@ -47,12 +47,11 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginForm) throws ExecutionException, InterruptedException {
         LoginResponse loginResponse;
         try {
-            loginResponse = authService.login(loginForm);
+            loginResponse = authService.requestLogin(loginForm);
             if (loginResponse != null) {
                 loginResponse.setMessage(MessageDictionary.LOGIN_SUCCESSFUL);
                 return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
             } else {
-                //loginResponse = new LoginResponse(MessageDictionary.WRONG_CREDENTIALS_INFORMATION, null, null, null);
                 loginResponse = LoginResponse.builder().message(MessageDictionary.WRONG_CREDENTIALS_INFORMATION).build();
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(loginResponse);
             }
