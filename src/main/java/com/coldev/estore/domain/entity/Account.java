@@ -18,7 +18,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "account")
 public class Account {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -49,6 +48,10 @@ public class Account {
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "email", nullable = false)
     private String email;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "phone")
+    private String phone;
 
     @Size(max = 10)
     @Basic(fetch = FetchType.LAZY)

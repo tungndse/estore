@@ -1,6 +1,7 @@
 package com.coldev.estore.infrastructure.service.implementation;
 
 
+import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.config.exception.general.ItemNotFoundException;
 import com.coldev.estore.domain.dto.login.request.LoginRequest;
 import com.coldev.estore.domain.dto.login.response.LoginResponse;
@@ -29,19 +30,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account findAccountByUsername(String username) {
+    public Account getAccountByUsername(String username) {
         return accountRepository.findByUsername(username)
                 .orElseThrow(() -> new ItemNotFoundException(username));
     }
 
     @Override
-    public Account findAccountById(Long id) {
-        return null;
-    }
+    public Account getAccountById(Long id) {
+        return accountRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id, ConstantDictionary.ACCOUNT));
 
-    @Override
-    public LoginResponse login(LoginRequest loginRequest) throws ExecutionException, InterruptedException {
-        return null;
     }
 
 

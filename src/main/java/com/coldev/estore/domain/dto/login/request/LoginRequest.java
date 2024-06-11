@@ -13,6 +13,6 @@ public class LoginRequest {
     private String username;
     private String password;
     private String token;
-    //private boolean loginWithEmail;
+    private boolean loginWithEmail;
 
 }
