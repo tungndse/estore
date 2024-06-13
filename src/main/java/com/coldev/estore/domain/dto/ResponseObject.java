@@ -1,7 +1,7 @@
 package com.coldev.estore.domain.dto;
 
 
-import com.coldev.estore.common.enumerate.EstoreErrorType;
+import com.coldev.estore.common.enumerate.EStoreErrorType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,7 +16,7 @@ public class ResponseObject<T> {
     private Pagination pagination;
 
     private T data;
-    private EstoreErrorType errorType;
+    private EStoreErrorType errorType;
 
     public ResponseObject() {
         this.data = (T) Collections.EMPTY_LIST;
@@ -41,7 +41,7 @@ public class ResponseObject<T> {
         private int totalItems;
         private Pagination pagination;
         private T data;
-        private EstoreErrorType errorType;
+        private EStoreErrorType errorType;
 
         public ResponseObjectBuilder() {
             this.data = (T) Collections.EMPTY_LIST;
@@ -66,7 +66,7 @@ public class ResponseObject<T> {
             return this;
         }
 
-        public ResponseObjectBuilder<T> errorType(EstoreErrorType errorType) {
+        public ResponseObjectBuilder<T> errorType(EStoreErrorType errorType) {
             this.errorType = errorType;
             return this;
         }

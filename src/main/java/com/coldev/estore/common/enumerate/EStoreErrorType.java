@@ -1,6 +1,6 @@
 package com.coldev.estore.common.enumerate;
 
-public enum EstoreErrorType {
+public enum EStoreErrorType {
 
     UNDEFINED,
     NOT_FOUND,
