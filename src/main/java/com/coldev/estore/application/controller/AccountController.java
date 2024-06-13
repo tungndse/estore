@@ -2,14 +2,15 @@ package com.coldev.estore.application.controller;
 
 
 import com.coldev.estore.config.exception.general.BadRequestException;
+import com.coldev.estore.domain.dto.account.request.AccountPostDto;
+import com.coldev.estore.domain.entity.Account;
 import com.coldev.estore.domain.service.AccountService;
 import com.coldev.estore.domain.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -42,5 +43,22 @@ public class AccountController {
                 accountService.getAccountById(authService.retrieveTokenizedAccountId())
         );
     }
+
+    @PostMapping
+    ResponseEntity<?> register(@RequestBody AccountPostDto payload)
+            throws BadRequestException, IOException {
+        return ResponseEntity.ok(
+                accountService.getAccountById(accountService.createAccount(payload, false).getId())
+        );
+    }
+
+    @PostMapping("/authorized")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    ResponseEntity<?> create(@Valid @RequestBody AccountPostDto payload)
+            throws BadRequestException, IOException {
+        return ResponseEntity.ok(
+                accountService.getAccountById(accountService.createAccount(payload, true).getId()));
+    }
+
 
 }

@@ -30,12 +30,8 @@ public class Account {
     private String username;
 
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "password", nullable = false)
