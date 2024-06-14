@@ -62,7 +62,7 @@ public class ProductController {
     public ResponseEntity<ResponseObject<List<ProductGetDto>>> getAllProducts
             (@RequestParam(name = "page", defaultValue = "0") int page,
              @RequestParam(name = "size", defaultValue = "10") int size,
-             @RequestParam(name = "category") Category category,
+             @RequestParam(name = "category", required = false) Category category,
              @RequestParam(name = "search_key", required = false) String searchKey,
              @RequestParam(name = "sort_by", required = false) String sortBy,
              @RequestParam(name = "sort_type", required = false) SortType sortType,
