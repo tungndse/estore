@@ -3,6 +3,7 @@ package com.coldev.estore.domain.dto.product.response;
 
 import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,10 +23,17 @@ public class ProductGetDto {
     private String name;
     private String description;
     private BigDecimal price;
+
+    @JsonProperty("image_url")
     private String imageUrl;
+
     private Long quantity;
+
+    @JsonProperty("created_at")
     private Date createdAt;
+
     private Status status;
+
     private Category category;
 
 }
