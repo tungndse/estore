@@ -140,6 +140,7 @@ public class AuthServiceImpl implements AuthService {
             throws IOException, BadRequestException {
         Long tokenizedAccountId;
         String authorizationHeader = request.getHeader(AUTHORIZATION);
+        log.info("Authorization header: " + authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
             authorizationHeader = authorizationHeader.substring("Bearer ".length());
             tokenizedAccountId = jwtService.decodeJWT(authorizationHeader).getClaim("accountId").asLong();

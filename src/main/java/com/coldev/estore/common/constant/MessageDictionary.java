@@ -26,4 +26,6 @@ public class MessageDictionary {
     public static final String ACTION_SUCCESS = "Action successful";
     public static final String ACTION_FAILED = "Action failed";
 
+    public static final String NOT_NULL = "Cannot be empty or null";
+    public static final String DATA_FOUND = "Data found";
 }
