@@ -38,6 +38,7 @@ public class AccountController {
     }
 
     @GetMapping("/user-info")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> getUserInfo() throws IOException, BadRequestException {
         return ResponseEntity.ok(
                 accountService.getAccountById(authService.retrieveTokenizedAccountId())
@@ -45,6 +46,7 @@ public class AccountController {
     }
 
     @PostMapping
+    @PreAuthorize("permitAll()")
     ResponseEntity<?> register(@RequestBody AccountPostDto payload)
             throws BadRequestException, IOException {
         return ResponseEntity.ok(

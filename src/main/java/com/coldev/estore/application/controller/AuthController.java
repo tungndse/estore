@@ -3,9 +3,11 @@ package com.coldev.estore.application.controller;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.coldev.estore.common.constant.MessageDictionary;
+import com.coldev.estore.config.exception.general.BadRequestException;
 import com.coldev.estore.domain.dto.auth.token.NewAccessTokenResponse;
 import com.coldev.estore.domain.dto.login.request.LoginRequest;
 import com.coldev.estore.domain.dto.login.response.LoginResponse;
+import com.coldev.estore.domain.service.AccountService;
 import com.coldev.estore.domain.service.AuthService;
 import com.coldev.estore.domain.service.JwtService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -29,13 +31,15 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class AuthController {
 
     private final AuthService authService;
+    private final AccountService accountService;
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private final JwtService jwtService;
 
-    public AuthController(AuthService authService,
+    public AuthController(AuthService authService, AccountService accountService,
                           HttpServletRequest request, HttpServletResponse response, JwtService jwtService) {
         this.authService = authService;
+        this.accountService = accountService;
         this.request = request;
         this.response = response;
         this.jwtService = jwtService;
@@ -77,5 +81,13 @@ public class AuthController {
             newAccessToken.setMessage(MessageDictionary.ACCESS_TOKEN_GRANTED);
             return ResponseEntity.status(HttpStatus.OK).body(newAccessToken);
         }
+    }
+
+    @GetMapping("/user-info")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> getUserInfo() throws IOException, BadRequestException {
+        return ResponseEntity.ok(
+                accountService.getAccountById(authService.retrieveTokenizedAccountId())
+        );
     }
 }

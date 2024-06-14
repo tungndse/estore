@@ -38,19 +38,18 @@ public class FirebaseServiceImpl implements FirebaseService {
 
     @Override
     public MediaResponse uploadMedia(MultipartFile file) throws IOException {
-        if(file == null){
+        if (file == null) {
             return null;
         }
         Bucket bucket = StorageClient.getInstance().bucket();
         String name = generateFileName(file.getOriginalFilename());
         bucket.create(name, file.getBytes(), file.getContentType());
-        Media media = Media.builder()
-                .key(name).mediaType(file.getContentType())
-                .url(this.getMediaUrl(name))
-                .build();
-
+        Media media = new Media();
+        media.setKey(name);
+        media.setMediaType(file.getContentType());
+        media.setUrl(this.getMediaUrl(name));
         media = mediaRepository.save(media);
-        return new MediaResponse(media.getKey(), getMediaUrl(media.getUrl()), media.getMediaType());
+        return new MediaResponse(media.getKey(), getMediaUrl(media.getKey()), media.getMediaType());
     }
 
     @Override
@@ -63,6 +62,7 @@ public class FirebaseServiceImpl implements FirebaseService {
         bucket.create(name, file, mediaType);
         Media media = Media.builder()
                 .key(name).mediaType(mediaType)
+                .url(getMediaUrl(name))
                 .build();
 
         media = mediaRepository.save(media);
