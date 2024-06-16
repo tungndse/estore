@@ -11,6 +11,7 @@ import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Date;
 
 @Data
@@ -30,13 +31,14 @@ public class Product {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Basic(fetch = FetchType.LAZY)
     @Nationalized
     @Lob
     @Column(name = "description", nullable = false)
     private String description;
 
     @NotNull
-    @ColumnDefault("0")
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "price", nullable = false, precision = 19, scale = 4)
     private BigDecimal price;
 
@@ -46,11 +48,13 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Basic(fetch = FetchType.LAZY)
     @Nationalized
     @Lob
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @ColumnDefault("0")
     @Column(name = "quantity", nullable = false)
@@ -67,5 +71,13 @@ public class Product {
     @Column(name = "status", nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "product_combo",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "combo_id")
+    )
+    private Collection<Combo> combos;
 
 }

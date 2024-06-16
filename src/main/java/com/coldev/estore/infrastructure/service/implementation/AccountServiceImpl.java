@@ -65,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
 
         String encodedPassword = passwordEncoder.encode(payload.getPassword());
 
-        Account.AccountBuilder accountBuilder = accountMapper.toAccountBuilder(payload)
+        Account.AccountBuilder accountBuilder = accountMapper.toNewAccountBuilder(payload)
                 .role(isAuthorized ? payload.getRole() : AccountRole.CUSTOMER)
                 .password(encodedPassword);
 
