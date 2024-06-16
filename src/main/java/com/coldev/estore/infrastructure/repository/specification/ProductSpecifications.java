@@ -6,6 +6,9 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
+import java.util.Set;
+
 public class ProductSpecifications {
 
     public static Specification<Product> hasCategory(ProductFilterRequest filterRequest) {
@@ -28,5 +31,11 @@ public class ProductSpecifications {
     public static Specification<Product> hasQuantityMin(ProductFilterRequest filter) {
         return ((root, query, criteriaBuilder) ->
                 criteriaBuilder.greaterThanOrEqualTo(root.get("quantity"), filter.getQuantityMin()));
+    }
+
+    public static Specification<Product> equalsToAnyId(Set<Long> ids) {
+        return (((root, query, criteriaBuilder) ->
+                criteriaBuilder.or(criteriaBuilder.in(root.get("id")).value(ids))
+        ));
     }
 }

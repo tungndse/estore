@@ -15,7 +15,7 @@ import org.mapstruct.ReportingPolicy;
 public interface ProductMapper {
 
 
-    default Product toNewProductEntity(ProductPostDto payload) {
+    default Product toNewProduct(ProductPostDto payload) {
         if (payload == null) return null;
 
         return Product.builder()

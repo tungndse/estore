@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
+import java.util.Collection;
 import java.util.Date;
 
 @Getter
@@ -66,4 +67,6 @@ public class Account {
     @Column(name = "created_at")
     @Builder.Default
     private Date createdAt = new Date();
+
+
 }

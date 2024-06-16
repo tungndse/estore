@@ -1,7 +1,10 @@
 package com.coldev.estore.application.controller;
 
 
+import com.coldev.estore.common.constant.MessageDictionary;
+import com.coldev.estore.common.enumerate.ResponseLevel;
 import com.coldev.estore.config.exception.general.BadRequestException;
+import com.coldev.estore.domain.dto.ResponseObject;
 import com.coldev.estore.domain.dto.account.request.AccountPostDto;
 import com.coldev.estore.domain.entity.Account;
 import com.coldev.estore.domain.service.AccountService;
@@ -34,7 +37,14 @@ public class AccountController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> one(@PathVariable Long id) {
-        return ResponseEntity.ok(accountService.getAccountById(id));
+
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .totalItems(1)
+                        .message(MessageDictionary.DATA_FOUND)
+                        .data(accountService.getAccountById(id))
+                        .build()
+        );
     }
 
     @GetMapping("/user-info")

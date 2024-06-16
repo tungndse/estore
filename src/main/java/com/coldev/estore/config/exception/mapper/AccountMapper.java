@@ -14,7 +14,7 @@ import java.util.Date;
 )
 public interface AccountMapper {
 
-    default Account.AccountBuilder toAccountBuilder(AccountPostDto payload) {
+    default Account.AccountBuilder toNewAccountBuilder(AccountPostDto payload) {
         if (payload == null) return null;
 
         return Account.builder()

@@ -12,7 +12,6 @@ import com.coldev.estore.domain.entity.Product;
 import com.coldev.estore.domain.service.ProductService;
 
 import com.coldev.estore.infrastructure.repository.ProductRepository;
-import com.coldev.estore.infrastructure.repository.specification.ProductSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,12 +37,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Product createNewProduct(ProductPostDto payload) throws IOException {
-        Product newProduct = productMapper.toNewProductEntity(payload);
+        Product newProduct = productMapper.toNewProduct(payload);
         return productRepository.save(newProduct);
     }
 
     @Override
-    public ProductGetDto getProductById(Long id) {
+    public ProductGetDto getProductDtoById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, ConstantDictionary.PRODUCT));
 
@@ -57,6 +56,12 @@ public class ProductServiceImpl implements ProductService {
         return productGetDtoBuilder.build();
 
     }
+
+    @Override
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
 
     @Override
     public List<ProductGetDto> getProductDtoList(ProductFilterRequest filterRequest) {
@@ -77,10 +82,16 @@ public class ProductServiceImpl implements ProductService {
                 .toList();
     }
 
+    @Override
     public Page<Product> getProductsPage(ProductFilterRequest filterRequest, Pageable pageable) {
         Specification<Product> specification =
                 Specification.allOf(SpecificationUtils.getSpecifications(filterRequest));
 
         return productRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public List<Product> getProductsList(Specification<Product> specification) {
+        return productRepository.findAll(specification);
     }
 }

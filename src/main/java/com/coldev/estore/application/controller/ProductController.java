@@ -16,10 +16,8 @@ import com.coldev.estore.domain.service.AuthService;
 import com.coldev.estore.domain.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -41,19 +39,19 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody ProductPostDto payload)
+    public ResponseEntity<?> create(@Valid @RequestBody ProductPostDto productPostDto)
             throws IOException, BadRequestException, DataNotFoundException {
         //Check admin
         AccountRole role = authService.retrieveTokenizedAccountRole();
         if (role != AccountRole.ADMIN) throw new BadRequestException(MessageDictionary.ACCESS_DENIED);
 
-        ProductGetDto productResponse = productService.getProductById(productService.createNewProduct(payload).getId());
+        ProductGetDto productGetDto = productService.getProductDtoById(productService.createNewProduct(productPostDto).getId());
 
         return ResponseEntity.ok(
                 ResponseObject.builder()
                         .totalItems(1)
                         .message(MessageDictionary.ACTION_SUCCESS)
-                        .data(productResponse)
+                        .data(productGetDto)
                         .build()
         );
     }
