@@ -44,17 +44,28 @@ public class FirebaseServiceImpl implements FirebaseService {
         Bucket bucket = StorageClient.getInstance().bucket();
         String name = generateFileName(file.getOriginalFilename());
         bucket.create(name, file.getBytes(), file.getContentType());
-        Media media = new Media();
-        media.setKey(name);
-        media.setMediaType(file.getContentType());
-        media.setUrl(this.getMediaUrl(name));
-        media = mediaRepository.save(media);
-        return new MediaResponse(media.getKey(), getMediaUrl(media.getKey()), media.getMediaType());
+
+        Media media = mediaRepository.save(Media.builder()
+                .key(name)
+                .mediaType(file.getContentType())
+                .url(this.getMediaUrl(name))
+                .build());
+
+        return MediaResponse.builder()
+                .id(media.getId())
+                .mediaKey(media.getKey())
+                .mediaType(media.getMediaType())
+                .mediaUrl(media.getUrl())
+                .build();
+
+        //return new MediaResponse(media.getKey(), getMediaUrl(media.getKey()), media.getMediaType());
     }
 
     @Override
     public MediaResponse uploadMedia(String fileName, byte[] file, String mediaType) throws IOException {
-        if (file == null) {
+
+        return null;
+        /*if (file == null) {
             return null;
         }
         Bucket bucket = StorageClient.getInstance().bucket();
@@ -67,7 +78,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
         media = mediaRepository.save(media);
 
-        return new MediaResponse(media.getKey(), getMediaUrl(media.getKey()), media.getMediaType());
+        return new MediaResponse(media.getKey(), getMediaUrl(media.getKey()), media.getMediaType());*/
     }
 
     @Override
@@ -95,9 +106,9 @@ public class FirebaseServiceImpl implements FirebaseService {
         media = mediaRepository.getMediaByKey(mediaName);
         if (media != null) {
             response = new MediaResponse();
-            response.setMediaKeys(media.getKey());
+            response.setMediaKey(media.getKey());
             response.setMediaType(media.getMediaType());
-            response.setMediaUrls(getMediaUrl(media.getKey()));
+            response.setMediaUrl(getMediaUrl(media.getKey()));
         }
         return response;
     }

@@ -3,7 +3,6 @@ package com.coldev.estore.application.controller;
 
 import com.coldev.estore.common.constant.MessageDictionary;
 import com.coldev.estore.common.enumerate.ResponseLevel;
-import com.coldev.estore.config.exception.mapper.ComboMapper;
 import com.coldev.estore.domain.dto.ResponseObject;
 import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
@@ -12,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@SuppressWarnings("unchecked")
 @RestController
 @RequestMapping("/api/v1/combos")
 @Log4j2
@@ -29,9 +29,9 @@ public class ComboController {
 
         //TODO code to check token
 
-        ComboGetDto comboGetDto = comboService.getComboById(
+        ComboGetDto comboGetDto = comboService.getComboDtoById(
                 comboService.createNewCombo(comboPostDto).getId(),
-                ResponseLevel.ONE_INNER_LIST
+                ResponseLevel.ONE_LEVEL_DEPTH
         );
 
         return ResponseEntity.ok(
@@ -49,8 +49,24 @@ public class ComboController {
                 ResponseObject.builder()
                         .totalItems(1)
                         .message(MessageDictionary.DATA_FOUND)
-                        .data(comboService.getComboById(id, ResponseLevel.ONE_INNER_LIST))
+                        .data(comboService.getComboDtoById(id, ResponseLevel.ONE_LEVEL_DEPTH))
                         .build()
         );
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCombo(@PathVariable Long id, @RequestBody ComboPostDto comboPostDto) {
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .totalItems(1)
+                        .message(MessageDictionary.ACTION_SUCCESS)
+                        .data(comboService.getComboDtoById(
+                                        comboService.updateCombo(id, comboPostDto).getId(),
+                                        ResponseLevel.ONE_LEVEL_DEPTH)
+                        )
+                        .build()
+        );
+    }
+
+
 }

@@ -47,6 +47,5 @@ public interface FirebaseService {
 
     String save(BufferedImage bufferedImage, String originalFileName) throws IOException;
 
-
     MediaResponse findMediaUrl(String mediaName);
 }

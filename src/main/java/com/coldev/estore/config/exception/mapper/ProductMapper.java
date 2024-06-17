@@ -14,7 +14,6 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface ProductMapper {
 
-
     default Product toNewProduct(ProductPostDto payload) {
         if (payload == null) return null;
 
@@ -23,24 +22,45 @@ public interface ProductMapper {
                 .description(payload.getDescription())
                 .category(payload.getCategory())
                 .status(Status.ACTIVE)
-                .imageUrl(payload.getMainMediaUrl())
                 .quantity(payload.getQuantity())
                 .price(payload.getPrice())
                 .build();
     }
 
+    default Product.ProductBuilder toNewProductBuilder(ProductPostDto payload) {
+        if (payload == null) return null;
+
+        return Product.builder()
+                .name(payload.getName())
+                .description(payload.getDescription())
+                .category(payload.getCategory())
+                .status(Status.ACTIVE)
+                .quantity(payload.getQuantity())
+                .price(payload.getPrice());
+    }
+
     default ProductGetDto.ProductGetDtoBuilder toProductGetDtoBuilder(Product product) {
         if (product == null) return null;
 
-        return ProductGetDto.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .category(product.getCategory())
-                .status(product.getStatus())
-                .imageUrl(product.getImageUrl())
-                .quantity(product.getQuantity())
-                .price(product.getPrice())
-                .createdAt(product.getCreatedAt());
+        ProductGetDto.ProductGetDtoBuilder productGetDtoBuilder =
+                ProductGetDto.builder()
+                        .id(product.getId())
+                        .name(product.getName())
+                        .description(product.getDescription())
+                        .category(product.getCategory())
+                        .status(product.getStatus())
+                        .quantity(product.getQuantity())
+                        .price(product.getPrice())
+                        .createdAt(product.getCreatedAt());
+
+        if (product.getBrand() != null) {
+            productGetDtoBuilder.brandName(product.getBrand().getName());
+        }
+
+        if (product.getMedia() != null) {
+            productGetDtoBuilder.imageUrl(product.getMedia().getUrl());
+        }
+
+        return productGetDtoBuilder;
     }
 }

@@ -5,11 +5,11 @@ import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.entity.Combo;
 
-import javax.xml.crypto.dsig.Manifest;
-
 public interface ComboService {
 
     Combo createNewCombo(ComboPostDto payload);
 
-    ComboGetDto getComboById(Long id, ResponseLevel responseLevel);
+    ComboGetDto getComboDtoById(Long id, ResponseLevel responseLevel);
+
+    Combo updateCombo(Long id, ComboPostDto comboPostDto);
 }

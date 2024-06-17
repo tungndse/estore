@@ -4,7 +4,6 @@ import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.common.constant.MessageDictionary;
 import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.Status;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import jakarta.validation.constraints.NotBlank;
@@ -17,12 +16,17 @@ import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 public class ProductPostDto {
+
+    @JsonProperty("brand_id")
+    @NotBlank(message = ConstantDictionary.BRAND + ": " + MessageDictionary.NOT_NULL)
+    private Long brandId;
 
     @NotBlank(message = ConstantDictionary.NAME + ": " + MessageDictionary.NOT_NULL)
     private String name;
@@ -39,12 +43,12 @@ public class ProductPostDto {
 
     private Category category;
 
-    @JsonProperty("main_media_url")
+    @JsonProperty("main_media_id")
     @Nullable
-    private String mainMediaUrl;
+    private Long mainMediaId;
 
-    @JsonProperty("sub_media_urls")
+    @JsonProperty("sub_media_ids")
     @Nullable
     @JsonPropertyDescription("Can be left null")
-    private List<String> subMediaUrls;
+    private Set<Long> subMediaIds;
 }

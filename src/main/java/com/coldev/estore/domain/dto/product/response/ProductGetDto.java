@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +25,9 @@ public class ProductGetDto {
     private String description;
     private BigDecimal price;
 
+    @JsonProperty("brand")
+    private String brandName;
+
     @JsonProperty("image_url")
     private String imageUrl;
 
@@ -35,5 +39,8 @@ public class ProductGetDto {
     private Status status;
 
     private Category category;
+
+    @JsonProperty("sub_media_urls")
+    private List<String> subMediaUrls;
 
 }

@@ -2,10 +2,7 @@ package com.coldev.estore.application.controller;
 
 
 import com.coldev.estore.common.constant.MessageDictionary;
-import com.coldev.estore.common.enumerate.AccountRole;
-import com.coldev.estore.common.enumerate.Category;
-import com.coldev.estore.common.enumerate.SortType;
-import com.coldev.estore.common.enumerate.Status;
+import com.coldev.estore.common.enumerate.*;
 import com.coldev.estore.config.exception.general.BadRequestException;
 import com.coldev.estore.config.exception.general.DataNotFoundException;
 import com.coldev.estore.domain.dto.ResponseObject;
@@ -42,10 +39,13 @@ public class ProductController {
     public ResponseEntity<?> create(@Valid @RequestBody ProductPostDto productPostDto)
             throws IOException, BadRequestException, DataNotFoundException {
         //Check admin
-        AccountRole role = authService.retrieveTokenizedAccountRole();
-        if (role != AccountRole.ADMIN) throw new BadRequestException(MessageDictionary.ACCESS_DENIED);
+        //AccountRole role = authService.retrieveTokenizedAccountRole();
+        //if (role != AccountRole.ADMIN) throw new BadRequestException(MessageDictionary.ACCESS_DENIED);
 
-        ProductGetDto productGetDto = productService.getProductDtoById(productService.createNewProduct(productPostDto).getId());
+        ProductGetDto productGetDto = productService.getProductDtoById(
+                productService.createNewProduct(productPostDto).getId(),
+                ResponseLevel.ONE_LEVEL_DEPTH
+        );
 
         return ResponseEntity.ok(
                 ResponseObject.builder()
@@ -71,7 +71,7 @@ public class ProductController {
             ) throws IOException, BadRequestException {
 
 
-        AccountRole role = authService.retrieveTokenizedAccountRole();
+        //AccountRole role = authService.retrieveTokenizedAccountRole();
 
         ProductFilterRequest filterRequest = ProductFilterRequest.builder()
                 .pageNo(page).pageSize(size)
@@ -82,8 +82,9 @@ public class ProductController {
                 .status(productStatus).quantityMin(quantityMin)
                 .build();
 
-        List<ProductGetDto> productGetDtoList = productService.getProductDtoList
-                (filterRequest);
+        List<ProductGetDto> productGetDtoList = productService.getProductDtoList(
+                filterRequest, ResponseLevel.ONE_LEVEL_DEPTH
+        );
         ResponseObject.ResponseObjectBuilder<List<ProductGetDto>> responseBuilder =
                 ResponseObject.builder();
 
