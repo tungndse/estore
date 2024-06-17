@@ -2,6 +2,8 @@ package com.coldev.estore.domain.dto;
 
 
 import com.coldev.estore.common.enumerate.EStoreErrorType;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,10 +14,14 @@ import java.util.Collections;
 public class ResponseObject<T> {
 
     private String message;
+    @JsonProperty("total_items")
     private int totalItems;
     private Pagination pagination;
 
     private T data;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("error_type")
     private EStoreErrorType errorType;
 
     public ResponseObject() {

@@ -2,6 +2,8 @@ package com.coldev.estore.domain.entity;
 
 import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -49,12 +52,6 @@ public class Product {
     private Category category;
 
     @Basic(fetch = FetchType.LAZY)
-    @Nationalized
-    @Lob
-    @Column(name = "image_url")
-    private String imageUrl;
-
-    @Basic(fetch = FetchType.LAZY)
     @NotNull
     @ColumnDefault("0")
     @Column(name = "quantity", nullable = false)
@@ -72,6 +69,18 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
+    @JsonIgnore
+    private Brand brand;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
+    @JsonIgnore
+    private Media media;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "product_combo",
@@ -79,5 +88,13 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "combo_id")
     )
     private Collection<Combo> combos;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "product_media",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "media_id")
+    )
+    private List<Media> subMediaList;
 
 }

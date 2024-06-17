@@ -1,6 +1,8 @@
 package com.coldev.estore.domain.entity;
 
 import com.coldev.estore.common.enumerate.Status;
+import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -52,14 +54,24 @@ public class Combo {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Nationalized
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "img_url")
-    private String imgUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
+    @JsonIgnore
+    private Media media;
 
     @ManyToMany(mappedBy = "combos", fetch = FetchType.LAZY)
     @JsonIgnore
     Collection<Product> products;
 
+    /*public Combo.ComboBuilder merge(ComboPostDto comboPostDto) {
+        return Combo.builder()
+                .name(comboPostDto.getName())
+                .description(comboPostDto.getDescription())
+                .discountPercentage(comboPostDto.getDiscountPercentage())
+                .discountValue(comboPostDto.getDiscountValue())
+                .status(comboPostDto.getStatus())
+                .imgUrl(comboPostDto.getImgUrl());
+        
+    }*/
 }

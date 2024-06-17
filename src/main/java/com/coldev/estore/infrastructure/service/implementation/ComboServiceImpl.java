@@ -9,9 +9,11 @@ import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.entity.Combo;
+import com.coldev.estore.domain.entity.Media;
 import com.coldev.estore.domain.entity.Product;
 import com.coldev.estore.domain.entity.ProductCombo;
 import com.coldev.estore.domain.service.ComboService;
+import com.coldev.estore.domain.service.MediaService;
 import com.coldev.estore.domain.service.ProductService;
 import com.coldev.estore.infrastructure.repository.ComboRepository;
 import com.coldev.estore.infrastructure.repository.ProductComboRepository;
@@ -33,15 +35,17 @@ public class ComboServiceImpl implements ComboService {
     private final ComboRepository comboRepository;
     private final ProductComboRepository productComboRepository;
     private final ProductService productService;
+    private final MediaService mediaService;
     private final ComboMapper comboMapper;
     private final ProductMapper productMapper;
 
     public ComboServiceImpl(ComboRepository comboRepository, ProductComboRepository productComboRepository,
-                            @Lazy ProductService productService,
+                            @Lazy ProductService productService, MediaService mediaService,
                             ComboMapper comboMapper, ProductMapper productMapper) {
         this.comboRepository = comboRepository;
         this.productComboRepository = productComboRepository;
         this.productService = productService;
+        this.mediaService = mediaService;
         this.comboMapper = comboMapper;
         this.productMapper = productMapper;
     }
@@ -52,17 +56,25 @@ public class ComboServiceImpl implements ComboService {
 
         Combo.ComboBuilder newComboBuilder = comboMapper.toNewComboBuilder(payload);
 
+        if (payload.getMainMediaId() != null) {
+            Media media = mediaService.getMediaById(payload.getMainMediaId());
+            newComboBuilder.media(media);
+        }
+
         log.info(payload.getProductIds());
 
         Combo savedCombo = comboRepository.save(newComboBuilder.build());
 
         if (payload.getProductIds() != null && !payload.getProductIds().isEmpty()) {
             //TODO Experimental
-            Set<Long> productIds = payload.getProductIds();
+            Set<Long> productIdSet = payload.getProductIds();
             List<Product> products = productService
-                    .getProductsList(ProductSpecifications.equalsToAnyId(productIds));
+                    .getProductList(ProductSpecifications.equalsToAnyId(productIdSet));
 
             log.info(products);
+
+            List<Long> productIds = products.stream()
+                    .map(Product::getId).toList();
 
             for (Long productId : productIds) {
                 productComboRepository.save(
@@ -78,14 +90,15 @@ public class ComboServiceImpl implements ComboService {
     }
 
     @Override
-    public ComboGetDto getComboById(Long id, ResponseLevel responseLevel) {
+    public ComboGetDto getComboDtoById(Long id, ResponseLevel responseLevel) {
         Combo combo = comboRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, ConstantDictionary.COMBO));
 
         switch (responseLevel) {
-            case BASIC -> {}
+            case BASIC -> {
+            }
 
-            case ONE_INNER_LIST -> {
+            case ONE_LEVEL_DEPTH -> {
                 log.info("ONE INNER LIST");
                 List<ProductCombo> productComboList = productComboRepository
                         .findAll(ProductComboSpecifications.hasComboId(combo.getId()));
@@ -106,7 +119,8 @@ public class ComboServiceImpl implements ComboService {
                 return comboGetDtoBuilder.build();
             }
 
-            case TWO_INNER_LISTS -> {}
+            case TWO_LEVEL_DEPTH -> {
+            }
 
             default -> {
                 return comboMapper.toComboGetDto(combo);
@@ -115,5 +129,46 @@ public class ComboServiceImpl implements ComboService {
 
         return null;
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Combo updateCombo(Long id, ComboPostDto comboPostDto) {
+
+        Combo combo = comboRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id, ConstantDictionary.COMBO));
+
+        Combo updatedCombo = this.mergeFromUpdate(combo, comboPostDto);
+
+        if (comboPostDto.getProductIds() != null && !comboPostDto.getProductIds().isEmpty()) {
+            Set<Long> productIds = comboPostDto.getProductIds();
+            // TODO algorithm to update ProductCombo for the best efficiency
+
+            // TODO then save the updatedProductCombo map to database here
+        }
+
+        return comboRepository.save(updatedCombo);
+
+    }
+
+    private Combo mergeFromUpdate(Combo combo, ComboPostDto comboPostDto) {
+        Combo.ComboBuilder comboBuilder = Combo.builder()
+                .id(combo.getId())
+                .status(comboPostDto.getStatus() != null ? comboPostDto.getStatus() : combo.getStatus())
+                .name(comboPostDto.getName() != null ? comboPostDto.getName() : combo.getName())
+                .description(comboPostDto.getDescription() != null ? comboPostDto.getDescription() : combo.getDescription())
+                .discountPercentage(comboPostDto.getDiscountPercentage() != null ?
+                        comboPostDto.getDiscountPercentage() : combo.getDiscountPercentage())
+                .discountValue(comboPostDto.getDiscountValue() != null ?
+                        comboPostDto.getDiscountValue() : combo.getDiscountValue());
+
+        if (comboPostDto.getMainMediaId() != null) {
+            Media comboMainMedia = mediaService.getMediaById(comboPostDto.getMainMediaId());
+            if (comboMainMedia != null) {
+                comboBuilder.media(comboMainMedia);
+            }
+        }
+
+        return comboBuilder.build();
     }
 }

@@ -2,6 +2,8 @@ package com.coldev.estore.domain.entity;
 
 import com.coldev.estore.common.enumerate.AccountRole;
 import com.coldev.estore.common.enumerate.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -61,6 +63,12 @@ public class Account {
     @Column(name = "status", nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "media_id", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
+    @JsonIgnore
+    private Media media;
 
     @Basic(fetch = FetchType.LAZY)
     @Temporal(TemporalType.TIMESTAMP)

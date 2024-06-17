@@ -1,8 +1,10 @@
 package com.coldev.estore.domain.service;
 
+import com.coldev.estore.common.enumerate.ResponseLevel;
 import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.dto.product.request.ProductPostDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
+import com.coldev.estore.domain.entity.Brand;
 import com.coldev.estore.domain.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,13 +18,15 @@ public interface ProductService {
 
     Product createNewProduct(ProductPostDto payload) throws IOException;
 
-    ProductGetDto getProductDtoById(Long id);
+    ProductGetDto getProductDtoById(Long id, ResponseLevel responseLevel);
 
     Product getProductById(Long id);
 
-    List<ProductGetDto> getProductDtoList(ProductFilterRequest filterRequest);
+    List<ProductGetDto> getProductDtoList(ProductFilterRequest filterRequest, ResponseLevel responseLevel);
 
     Page<Product> getProductsPage(ProductFilterRequest filterRequest, Pageable pageable);
 
-    List<Product> getProductsList(Specification<Product> specification);
+    List<Product> getProductList(Specification<Product> specification);
+
+    Brand getBrandById(Long id);
 }

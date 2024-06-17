@@ -16,28 +16,37 @@ public interface ComboMapper {
     default ComboGetDto toComboGetDto(Combo combo) {
         if (combo == null) return null;
 
-        return ComboGetDto.builder()
+        ComboGetDto.ComboGetDtoBuilder comboGetDtoBuilder = ComboGetDto.builder()
                 .id(combo.getId())
                 .name(combo.getName())
                 .description(combo.getDescription())
                 .discountPercentage(combo.getDiscountPercentage())
                 .discountValue(combo.getDiscountValue())
-                .imgUrl(combo.getImgUrl())
-                .status(combo.getStatus())
-                .build();
+                .status(combo.getStatus());
+
+        if (combo.getMedia() != null) {
+            comboGetDtoBuilder.imgUrl(combo.getMedia().getUrl());
+        }
+
+        return comboGetDtoBuilder.build();
     }
 
     default ComboGetDto.ComboGetDtoBuilder toComboGetDtoBuilder(Combo combo) {
         if (combo == null) return null;
 
-        return ComboGetDto.builder()
+        ComboGetDto.ComboGetDtoBuilder comboGetDtoBuilder = ComboGetDto.builder()
                 .id(combo.getId())
                 .name(combo.getName())
                 .description(combo.getDescription())
                 .discountPercentage(combo.getDiscountPercentage())
                 .discountValue(combo.getDiscountValue())
-                .imgUrl(combo.getImgUrl())
                 .status(combo.getStatus());
+
+        if (combo.getMedia() != null) {
+            comboGetDtoBuilder.imgUrl(combo.getMedia().getUrl());
+        }
+
+        return comboGetDtoBuilder;
     }
 
     default Combo.ComboBuilder toNewComboBuilder(ComboPostDto comboPostDto) {
@@ -48,7 +57,6 @@ public interface ComboMapper {
                 .description(comboPostDto.getDescription())
                 .discountPercentage(comboPostDto.getDiscountPercentage())
                 .discountValue(comboPostDto.getDiscountValue())
-                .imgUrl(comboPostDto.getImgUrl())
                 .status(comboPostDto.getStatus());
 
     }
