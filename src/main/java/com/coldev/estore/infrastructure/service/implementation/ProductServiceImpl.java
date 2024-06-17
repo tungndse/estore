@@ -5,13 +5,17 @@ import com.coldev.estore.common.enumerate.ResponseLevel;
 import com.coldev.estore.common.utility.SortUtils;
 import com.coldev.estore.common.utility.SpecificationUtils;
 import com.coldev.estore.config.exception.general.ItemNotFoundException;
+import com.coldev.estore.config.exception.mapper.ComboMapper;
 import com.coldev.estore.config.exception.mapper.ProductMapper;
+import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.dto.product.request.ProductPostDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.entity.Brand;
+import com.coldev.estore.domain.entity.Combo;
 import com.coldev.estore.domain.entity.Media;
 import com.coldev.estore.domain.entity.Product;
+import com.coldev.estore.domain.service.ComboService;
 import com.coldev.estore.domain.service.MediaService;
 import com.coldev.estore.domain.service.ProductService;
 
@@ -32,16 +36,20 @@ import java.util.Set;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private final ComboMapper comboMapper;
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
     private final BrandRepository brandRepository;
     private final MediaService mediaService;
+    private final ComboService comboService;
 
-    public ProductServiceImpl(ProductMapper productMapper, ProductRepository productRepository, BrandRepository brandRepository, MediaService mediaService) {
+    public ProductServiceImpl(ComboMapper comboMapper, ProductMapper productMapper, ProductRepository productRepository, BrandRepository brandRepository, MediaService mediaService, ComboService comboService) {
+        this.comboMapper = comboMapper;
         this.productMapper = productMapper;
         this.productRepository = productRepository;
         this.brandRepository = brandRepository;
         this.mediaService = mediaService;
+        this.comboService = comboService;
     }
 
 
@@ -96,6 +104,8 @@ public class ProductServiceImpl implements ProductService {
         switch (responseLevel) {
             case BASIC -> {}
             case ONE_LEVEL_DEPTH -> {
+
+                //Media
                 List<Media> mediaList =
                         mediaService.getMediaListByProductId(product.getId());
 
@@ -105,6 +115,17 @@ public class ProductServiceImpl implements ProductService {
                             .toList();
                     productGetDtoBuilder.subMediaUrls(subMediaUrls);
                 }
+
+                //Combo
+                List<Combo> comboList = comboService.getComboListByProductId(product.getId());
+                if (comboList != null && !comboList.isEmpty()) {
+                    List<ComboGetDto> comboGetDtoList = comboList.stream()
+                            .map(comboMapper::toComboGetDto)
+                            .toList();
+
+                    productGetDtoBuilder.comboGetDtoList(comboGetDtoList);
+                }
+
             }
             case TWO_LEVEL_DEPTH -> {}
         }

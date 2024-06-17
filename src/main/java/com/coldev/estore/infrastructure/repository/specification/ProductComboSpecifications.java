@@ -9,4 +9,8 @@ public class ProductComboSpecifications {
         return (((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("comboId"), comboId)));
     }
 
+    public static Specification<ProductCombo> hasProductId(Long productId) {
+        return (((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("productId"), productId)));
+    }
+
 }

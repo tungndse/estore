@@ -8,22 +8,19 @@ import com.coldev.estore.config.exception.mapper.ProductMapper;
 import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
-import com.coldev.estore.domain.entity.Combo;
-import com.coldev.estore.domain.entity.Media;
-import com.coldev.estore.domain.entity.Product;
-import com.coldev.estore.domain.entity.ProductCombo;
+import com.coldev.estore.domain.entity.*;
 import com.coldev.estore.domain.service.ComboService;
 import com.coldev.estore.domain.service.MediaService;
 import com.coldev.estore.domain.service.ProductService;
 import com.coldev.estore.infrastructure.repository.ComboRepository;
 import com.coldev.estore.infrastructure.repository.ProductComboRepository;
-import com.coldev.estore.infrastructure.repository.specification.ProductComboSpecifications;
-import com.coldev.estore.infrastructure.repository.specification.ProductSpecifications;
+import com.coldev.estore.infrastructure.repository.specification.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -68,10 +65,12 @@ public class ComboServiceImpl implements ComboService {
         if (payload.getProductIds() != null && !payload.getProductIds().isEmpty()) {
             //TODO Experimental
             Set<Long> productIdSet = payload.getProductIds();
+            log.info("start stream product");
             List<Product> products = productService
                     .getProductList(ProductSpecifications.equalsToAnyId(productIdSet));
+            log.info("finished streaming");
 
-            log.info(products);
+            //log.info(products);
 
             List<Long> productIds = products.stream()
                     .map(Product::getId).toList();
@@ -149,6 +148,20 @@ public class ComboServiceImpl implements ComboService {
 
         return comboRepository.save(updatedCombo);
 
+    }
+
+    @Override
+    public List<Combo> getComboListByProductId(Long productId) {
+        List<ProductCombo> productComboList =
+                productComboRepository.findAll(ProductComboSpecifications.hasProductId(productId));
+
+        List<Long> comboIdList = productComboList.stream()
+                .map(ProductCombo::getComboId)
+                .toList();
+
+        Set<Long> comboIdSet = new HashSet<>(comboIdList);
+
+        return comboRepository.findAll(ComboSpecifications.equalsToAnyId(comboIdSet));
     }
 
     private Combo mergeFromUpdate(Combo combo, ComboPostDto comboPostDto) {

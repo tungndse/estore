@@ -56,6 +56,18 @@ public class ProductController {
         );
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> one(@PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .totalItems(1)
+                        .message(MessageDictionary.DATA_FOUND)
+                        .data(productService.getProductDtoById(id, ResponseLevel.ONE_LEVEL_DEPTH))
+                        .build()
+        );
+    }
+
     @GetMapping()
     public ResponseEntity<ResponseObject<List<ProductGetDto>>> getAllProducts
             (@RequestParam(name = "page", defaultValue = "0") int page,
