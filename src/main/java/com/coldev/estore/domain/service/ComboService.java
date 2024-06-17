@@ -5,6 +5,8 @@ import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.entity.Combo;
 
+import java.util.List;
+
 public interface ComboService {
 
     Combo createNewCombo(ComboPostDto payload);
@@ -12,4 +14,6 @@ public interface ComboService {
     ComboGetDto getComboDtoById(Long id, ResponseLevel responseLevel);
 
     Combo updateCombo(Long id, ComboPostDto comboPostDto);
+
+    List<Combo> getComboListByProductId(Long productId);
 }
