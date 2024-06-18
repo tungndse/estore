@@ -24,7 +24,7 @@ public interface ProductService {
 
     List<ProductGetDto> getProductDtoList(ProductFilterRequest filterRequest, ResponseLevel responseLevel);
 
-    Page<Product> getProductsPage(ProductFilterRequest filterRequest, Pageable pageable);
+    Page<Product> getProductPage(ProductFilterRequest filterRequest, Pageable pageable);
 
     List<Product> getProductList(Specification<Product> specification);
 

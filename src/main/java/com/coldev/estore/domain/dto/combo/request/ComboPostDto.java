@@ -30,6 +30,7 @@ public class ComboPostDto {
 
     @JsonProperty("discount_by_value")
     private BigDecimal discountValue;
+
     private Status status;
 
     @JsonProperty("main_media_id")

@@ -33,9 +33,9 @@ public class MediaController {
     public ResponseEntity<?> saveMediaList(@RequestPart MultipartFile[] files)
             throws IOException {
         List<MediaResponse> imageUrlList = new ArrayList<>();
-         for (MultipartFile file : files) {
-             imageUrlList.add(firebaseService.uploadMedia(file));
-         }
+        for (MultipartFile file : files) {
+            imageUrlList.add(firebaseService.uploadMedia(file));
+        }
 
         ResponseObject<List<MediaResponse>> responseObject = new ResponseObject<>();
         responseObject.setMessage(MessageDictionary.ACTION_SUCCESS);
@@ -50,7 +50,7 @@ public class MediaController {
         ResponseObject<MediaResponse> responseObject = new ResponseObject<>();
         responseObject.setMessage(MessageDictionary.ACTION_SUCCESS);
         responseObject.setData(firebaseService.findMediaUrl(fileId));
-        if(responseObject.getData() != null){
+        if (responseObject.getData() != null) {
             responseObject.setTotalItems(1);
         } else {
             responseObject.setTotalItems(0);

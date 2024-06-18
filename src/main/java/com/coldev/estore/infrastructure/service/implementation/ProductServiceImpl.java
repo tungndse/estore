@@ -102,7 +102,8 @@ public class ProductServiceImpl implements ProductService {
         //
         // Mapper should not call services
         switch (responseLevel) {
-            case BASIC -> {}
+            case BASIC -> {
+            }
             case ONE_LEVEL_DEPTH -> {
 
                 //Media
@@ -127,7 +128,8 @@ public class ProductServiceImpl implements ProductService {
                 }
 
             }
-            case TWO_LEVEL_DEPTH -> {}
+            case TWO_LEVEL_DEPTH -> {
+            }
         }
 
 
@@ -144,20 +146,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductGetDto> getProductDtoList(ProductFilterRequest filterRequest,
                                                  ResponseLevel responseLevel) {
-        Pageable pageable = SortUtils.getPagination
-                (filterRequest.getPageSize(), filterRequest.getPageNo(),
-                        filterRequest.getSortOrder(), filterRequest.getSortAttribute());
+        Pageable pageable = SortUtils.getPagination(
+                filterRequest.getPageSize(), filterRequest.getPageNo(),
+                filterRequest.getSortOrder(), filterRequest.getSortAttribute());
 
-        Page<Product> productsPage = this.getProductsPage(filterRequest, pageable);
+        Page<Product> productPage = this.getProductPage(filterRequest, pageable);
 
-        return productsPage.stream()
+        return productPage.stream()
                 .map(product -> {
                     ProductGetDto.ProductGetDtoBuilder productGetDtoBuilder =
                             productMapper.toProductGetDtoBuilder(product);
-                    //TODO Code to find list images and attach to this get dto
 
                     switch (responseLevel) {
-                        case BASIC -> {}
+                        case BASIC -> {
+                        }
                         case ONE_LEVEL_DEPTH -> {
                             List<Media> mediaList =
                                     mediaService.getMediaListByProductId(product.getId());
@@ -169,7 +171,9 @@ public class ProductServiceImpl implements ProductService {
                                 productGetDtoBuilder.subMediaUrls(subMediaUrls);
                             }
                         }
-                        case TWO_LEVEL_DEPTH -> {}
+                        case TWO_LEVEL_DEPTH -> {
+                            // Optional Later
+                        }
                     }
 
                     return productGetDtoBuilder.build();
@@ -178,7 +182,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> getProductsPage(ProductFilterRequest filterRequest, Pageable pageable) {
+    public Page<Product> getProductPage(ProductFilterRequest filterRequest, Pageable pageable) {
         Specification<Product> specification =
                 Specification.allOf(SpecificationUtils.getSpecifications(filterRequest));
 
