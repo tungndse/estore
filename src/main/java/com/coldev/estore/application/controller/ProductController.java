@@ -70,8 +70,8 @@ public class ProductController {
 
     @GetMapping()
     public ResponseEntity<ResponseObject<List<ProductGetDto>>> getAllProducts
-            (@RequestParam(name = "page", required = false) int page,
-             @RequestParam(name = "size", required = false) int size,
+            (@RequestParam(name = "page", defaultValue = "0") int page,
+             @RequestParam(name = "size", defaultValue = "100") int size,
              @RequestParam(name = "category", required = false) Category category,
              @RequestParam(name = "search_key", required = false) String searchKey,
              @RequestParam(name = "sort_by", required = false) String sortBy,
