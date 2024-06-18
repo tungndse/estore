@@ -55,7 +55,7 @@ public class Combo {
     private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "media_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "media_id", referencedColumnName = "id")
     @JsonBackReference
     @JsonIgnore
     private Media media;

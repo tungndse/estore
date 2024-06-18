@@ -2,9 +2,12 @@ package com.coldev.estore.infrastructure.service.implementation;
 
 import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.common.enumerate.ResponseLevel;
+import com.coldev.estore.common.utility.SortUtils;
+import com.coldev.estore.common.utility.SpecificationUtils;
 import com.coldev.estore.config.exception.general.ItemNotFoundException;
 import com.coldev.estore.config.exception.mapper.ComboMapper;
 import com.coldev.estore.config.exception.mapper.ProductMapper;
+import com.coldev.estore.domain.dto.combo.request.ComboFilterRequest;
 import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
@@ -15,15 +18,18 @@ import com.coldev.estore.domain.service.ProductService;
 import com.coldev.estore.infrastructure.repository.ComboRepository;
 import com.coldev.estore.infrastructure.repository.ProductComboRepository;
 import com.coldev.estore.infrastructure.repository.specification.*;
+import com.google.common.collect.Sets;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+
 
 @Service
 @Log4j2
@@ -65,12 +71,8 @@ public class ComboServiceImpl implements ComboService {
         if (payload.getProductIds() != null && !payload.getProductIds().isEmpty()) {
             //TODO Experimental
             Set<Long> productIdSet = payload.getProductIds();
-            log.info("start stream product");
             List<Product> products = productService
                     .getProductList(ProductSpecifications.equalsToAnyId(productIdSet));
-            log.info("finished streaming");
-
-            //log.info(products);
 
             List<Long> productIds = products.stream()
                     .map(Product::getId).toList();
@@ -140,14 +142,55 @@ public class ComboServiceImpl implements ComboService {
         Combo updatedCombo = this.mergeFromUpdate(combo, comboPostDto);
 
         if (comboPostDto.getProductIds() != null && !comboPostDto.getProductIds().isEmpty()) {
-            Set<Long> productIds = comboPostDto.getProductIds();
-            // TODO algorithm to update ProductCombo for the best efficiency
+            Set<Long> updatedProductIdSet = comboPostDto.getProductIds();
+            Set<Long> originalProductIdSet = new HashSet<>(
+                    productComboRepository
+                            .findAll(ProductComboSpecifications.hasComboId(combo.getId()))
+                            .stream()
+                            .map(ProductCombo::getProductId)
+                            .toList()
+            );
 
-            // TODO then save the updatedProductCombo map to database here
+            log.info("Original Product IDs Set: " + originalProductIdSet);
+            log.info("New Product IDs Set: " + updatedProductIdSet);
+
+            Set<Long> intersection = Sets.intersection(updatedProductIdSet, originalProductIdSet);
+            log.info("Intersection Product IDs Set: " + intersection);
+
+           /*
+           Set<Long> difference = Sets.difference(updatedProductIdSet, originalProductIdSet);
+            log.info("DIFFERENCE: " + difference);
+            Set<Long> union = Sets.union(updatedProductIdSet, originalProductIdSet);
+            log.info("UNION: " + union);
+            Set<Long> symmetricDifference = Sets.symmetricDifference(updatedProductIdSet, originalProductIdSet);
+            log.info("SYMMETRIC_DIFFERENCE: " + symmetricDifference);
+            */
+
+            log.info("---- RESULT AS BELOW ---- ");
+            Set<Long> comparedToOriginalSet = Sets.symmetricDifference(originalProductIdSet, intersection);
+            log.info("Product IDs Set [to be deleted]: " + comparedToOriginalSet);
+
+            Set<Long> comparedToUpdatedSet = Sets.symmetricDifference(updatedProductIdSet, intersection);
+            log.info("Product IDs Set [to be added]: " + comparedToUpdatedSet);
+
+            productComboRepository.delete(
+                    ProductComboSpecifications.hasComboId(combo.getId())
+                            .and(ProductComboSpecifications.equalsToAnyProductId(comparedToOriginalSet))
+            );
+
+            for (Long productId : comparedToUpdatedSet) {
+                productComboRepository.save(
+                        ProductCombo.builder()
+                                .productId(productId)
+                                .comboId(combo.getId())
+                                .build()
+                );
+            }
         }
 
-        return comboRepository.save(updatedCombo);
+        log.info("---- COMPLETED PRODUCT COMBO OPERATION ---");
 
+        return comboRepository.save(updatedCombo);
     }
 
     @Override
@@ -162,6 +205,49 @@ public class ComboServiceImpl implements ComboService {
         Set<Long> comboIdSet = new HashSet<>(comboIdList);
 
         return comboRepository.findAll(ComboSpecifications.equalsToAnyId(comboIdSet));
+    }
+
+    @Override
+    public List<ComboGetDto> getComboDtoList(ComboFilterRequest comboFilterRequest,
+                                             ResponseLevel responseLevel) {
+        Pageable pageable = SortUtils.getPagination(
+                comboFilterRequest.getPageSize(), comboFilterRequest.getPageNo(),
+                comboFilterRequest.getSortOrder(), comboFilterRequest.getSortAttribute()
+        );
+
+        Page<Combo> comboPage = this.getComboPage(comboFilterRequest, pageable);
+
+        return comboPage.stream()
+                .map(combo -> {
+
+                    ComboGetDto.ComboGetDtoBuilder comboGetDtoBuilder =
+                            comboMapper.toComboGetDtoBuilder(combo);
+
+                    switch (responseLevel) {
+                        case BASIC -> {
+
+                            }
+                        case ONE_LEVEL_DEPTH -> {
+                            //Not yet
+                        }
+
+                        case TWO_LEVEL_DEPTH -> {
+                            // not yet
+                        }
+                    }
+
+                    return comboGetDtoBuilder.build();
+                })
+                .toList();
+
+    }
+
+    @Override
+    public Page<Combo> getComboPage(ComboFilterRequest comboFilterRequest, Pageable pageable) {
+        Specification<Combo> specification =
+                Specification.allOf(SpecificationUtils.getSpecifications(comboFilterRequest));
+
+        return comboRepository.findAll(specification, pageable);
     }
 
     private Combo mergeFromUpdate(Combo combo, ComboPostDto comboPostDto) {

@@ -18,16 +18,12 @@ public class ProductFilterRequest extends FilterRequest {
 
     private Category category;
 
-    @JsonProperty("price_min")
     private Double priceMin;
 
-    @JsonProperty("price_max")
     private Double priceMax;
 
-    @JsonProperty("status")
     private Status status;
 
-    @JsonProperty("quantity_min")
     private Long quantityMin;
 
 
