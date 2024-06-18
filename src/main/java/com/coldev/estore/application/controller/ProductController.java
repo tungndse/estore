@@ -105,7 +105,6 @@ public class ProductController {
                     .message(MessageDictionary.DATA_FOUND)
                     .data(productGetDtoList)
                     .totalItems(productGetDtoList.size()).build();
-
             return ResponseEntity.ok(response);
         } else {
             ResponseObject<List<ProductGetDto>> response =responseBuilder.message(MessageDictionary.DATA_NOT_FOUND)

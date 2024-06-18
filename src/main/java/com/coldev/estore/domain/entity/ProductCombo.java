@@ -24,4 +24,5 @@ public class ProductCombo {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
+
 }

@@ -46,8 +46,8 @@ public class ComboController {
 
     @GetMapping
     public ResponseEntity<?> search
-            (@RequestParam(name = "page", required = false) int page,
-             @RequestParam(name = "size", required = false) int size,
+            (@RequestParam(name = "page", defaultValue = "0") int page,
+             @RequestParam(name = "size", defaultValue = "100") int size,
              @RequestParam(name = "sort_by", required = false) String sortBy,
              @RequestParam(name = "sort_type", required = false) SortType sortType,
 
