@@ -3,6 +3,7 @@ package com.coldev.estore.domain.dto.combo.response;
 import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -36,9 +37,13 @@ public class ComboGetDto {
     @JsonProperty("img_url")
     private String imgUrl;
 
-    //TODO Determine response, list of ProductGet or just Ids?
+    @JsonProperty("products_total")
+    private BigDecimal productsTotal;
+
     @JsonProperty("products")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ProductGetDto> productGetDtoList;
+
 
     public String getDiscountPercentageString() {
         if (discountPercentage == null || discountPercentage == 0.0) return null;
