@@ -28,6 +28,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -223,10 +224,19 @@ public class ComboServiceImpl implements ComboService {
                     ComboGetDto.ComboGetDtoBuilder comboGetDtoBuilder =
                             comboMapper.toComboGetDtoBuilder(combo);
 
+                    List<Product> products = productService.getProductList(
+                            ProductSpecifications.hasComboId(combo.getId())
+                    );
+
+                    BigDecimal productsTotalAfterDeduction =
+                            this.calculateComboTotalAfterDeduction(combo, products);
+
+                    comboGetDtoBuilder.productsTotal(productsTotalAfterDeduction);
+
                     switch (responseLevel) {
                         case BASIC -> {
 
-                            }
+                        }
                         case ONE_LEVEL_DEPTH -> {
                             //Not yet
                         }
@@ -240,6 +250,29 @@ public class ComboServiceImpl implements ComboService {
                 })
                 .toList();
 
+    }
+
+    private BigDecimal calculateComboTotalAfterDeduction(Combo combo, List<Product> products) {
+        BigDecimal productsTotal = products.stream()
+                .map(Product::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal deductionByPercent = combo.getDiscountPercentage() > 0 ?
+                productsTotal.multiply(BigDecimal.valueOf(combo.getDiscountPercentage()))
+                :
+                BigDecimal.ZERO;
+
+        BigDecimal deductionByValue = combo.getDiscountValue();
+
+        BigDecimal productsTotalAfterDeduction = productsTotal
+                .subtract(deductionByPercent)
+                .subtract(deductionByValue);
+
+        if (productsTotalAfterDeduction.compareTo(BigDecimal.ZERO) <= 0) {
+            productsTotalAfterDeduction = BigDecimal.ZERO;
+        }
+
+        return productsTotalAfterDeduction;
     }
 
     @Override

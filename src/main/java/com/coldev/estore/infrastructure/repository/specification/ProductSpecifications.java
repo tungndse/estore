@@ -1,6 +1,7 @@
 package com.coldev.estore.infrastructure.repository.specification;
 
 import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
+import com.coldev.estore.domain.entity.Combo;
 import com.coldev.estore.domain.entity.Product;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
@@ -37,5 +38,12 @@ public class ProductSpecifications {
         return (((root, query, criteriaBuilder) ->
                 criteriaBuilder.or(criteriaBuilder.in(root.get("id")).value(ids))
         ));
+    }
+
+    public static Specification<Product> hasComboId(Long comboId) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Product, Combo> comboJoin = root.join("combos");
+            return criteriaBuilder.equal(comboJoin.get("id"), comboId);
+        };
     }
 }
