@@ -3,7 +3,6 @@ package com.coldev.estore.domain;
 import com.coldev.estore.common.enumerate.SortType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -32,6 +31,6 @@ public class FilterRequest implements Serializable {
     private String searchKey;
 
     @JsonProperty("description_contains")
-    private String descriptionContainsString;
+    private String descriptionContains;
 
 }

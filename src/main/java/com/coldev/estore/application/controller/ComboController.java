@@ -2,7 +2,6 @@ package com.coldev.estore.application.controller;
 
 
 import com.coldev.estore.common.constant.MessageDictionary;
-import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.ResponseLevel;
 import com.coldev.estore.common.enumerate.SortType;
 import com.coldev.estore.common.enumerate.Status;
@@ -10,7 +9,6 @@ import com.coldev.estore.domain.dto.ResponseObject;
 import com.coldev.estore.domain.dto.combo.request.ComboFilterRequest;
 import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
-import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.service.ComboService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -69,7 +67,7 @@ public class ComboController {
         ComboFilterRequest comboFilterRequest = ComboFilterRequest.builder()
                 .pageNo(page).pageSize(size)
                 .sortOrder(sortType).sortAttribute(sortBy)
-                .searchKey(searchKey).descriptionContainsString(searchDescription)
+                .searchKey(searchKey).descriptionContains(searchDescription)
                 .discountPercentMin(discountPercentMin)
                 .discountPercentMax(discountPercentMax)
                 .discountValueMin(discountValueMin)

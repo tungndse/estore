@@ -2,6 +2,7 @@ package com.coldev.estore.config.exception.mapper;
 
 import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.domain.dto.account.request.AccountPostDto;
+import com.coldev.estore.domain.dto.account.response.AccountGetDto;
 import com.coldev.estore.domain.entity.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -19,13 +20,35 @@ public interface AccountMapper {
 
         return Account.builder()
                 .username(payload.getUsername())
-                //.password(payload.getPassword())
+                .description(payload.getDescription())
                 .email(payload.getEmail())
                 .phone(payload.getPhone())
                 .name(payload.getName())
                 .address(payload.getAddress())
                 .status(Status.ACTIVE)
                 .createdAt(new Date());
+    }
+
+    default AccountGetDto toAccountGetDto(Account account) {
+        return this.toAccountGetDtoBuilder(account).build();
+    }
+
+    default AccountGetDto.AccountGetDtoBuilder toAccountGetDtoBuilder(Account account) {
+        if (account == null) return null;
+
+        AccountGetDto.AccountGetDtoBuilder builder = AccountGetDto.builder()
+                .username(account.getUsername())
+                .description(account.getDescription())
+                .email(account.getEmail())
+                .phone(account.getPhone())
+                .name(account.getName())
+                .address(account.getAddress())
+                .status(account.getStatus())
+                .createdAt(account.getCreatedAt());
+
+        if (account.getMedia() != null) builder.mediaUrl(account.getMedia().getUrl());
+
+        return builder;
     }
 
 }

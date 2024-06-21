@@ -7,11 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MediaResponse {
+public class MediaResponse implements Serializable {
 
     private Long id;
     @JsonProperty("media_name")

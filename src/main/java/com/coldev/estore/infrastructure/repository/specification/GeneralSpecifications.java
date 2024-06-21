@@ -5,7 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class GeneralSpecifications {
 
-    public static <E> Specification<E> searchByName(FilterRequest filterRequest) {
+    public static <E> Specification<E> nameContains(FilterRequest filterRequest) {
         String searchKey = filterRequest.getSearchKey();
 
         if (searchKey == null || searchKey.isBlank()) {
@@ -18,8 +18,8 @@ public class GeneralSpecifications {
         };
     }
 
-    public static <E> Specification<E> descriptionContainsString(FilterRequest filter) {
-        String stringContains = filter.getDescriptionContainsString();
+    public static <E> Specification<E> descriptionContains(FilterRequest filter) {
+        String stringContains = filter.getDescriptionContains();
 
         return (root, query, criteriaBuilder) -> {
             query.distinct(true);
