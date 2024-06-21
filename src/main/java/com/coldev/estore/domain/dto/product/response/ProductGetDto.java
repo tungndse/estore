@@ -3,9 +3,11 @@ package com.coldev.estore.domain.dto.product.response;
 
 import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.Status;
+import com.coldev.estore.common.serializer.MoneyBigDecimalSerializer;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +28,8 @@ public class ProductGetDto implements Serializable {
     private Long id;
     private String name;
     private String description;
+
+    @JsonSerialize(using = MoneyBigDecimalSerializer.class)
     private BigDecimal price;
 
     @JsonProperty("brand")

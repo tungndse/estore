@@ -1,10 +1,12 @@
 package com.coldev.estore.domain.dto.combo.response;
 
 import com.coldev.estore.common.enumerate.Status;
+import com.coldev.estore.common.serializer.MoneyBigDecimalSerializer;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import java.io.Serializable;
@@ -30,6 +32,7 @@ public class ComboGetDto implements Serializable {
     @JsonProperty("discount_by_percent")
     private String discountPercentageString;
 
+    @JsonSerialize(using = MoneyBigDecimalSerializer.class)
     @JsonProperty("discount_by_value")
     private BigDecimal discountValue;
 
@@ -38,13 +41,13 @@ public class ComboGetDto implements Serializable {
     @JsonProperty("img_url")
     private String imgUrl;
 
+    @JsonSerialize(using = MoneyBigDecimalSerializer.class)
     @JsonProperty("products_total")
     private BigDecimal productsTotal;
 
     @JsonProperty("products")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<ProductGetDto> productGetDtoList;
-
 
     public String getDiscountPercentageString() {
         if (discountPercentage == null || discountPercentage == 0.0) return null;
