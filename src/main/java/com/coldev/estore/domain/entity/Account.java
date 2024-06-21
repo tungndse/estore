@@ -37,6 +37,10 @@ public class Account {
     private String name;
 
     @Basic(fetch = FetchType.LAZY)
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Basic(fetch = FetchType.LAZY)
     @Column(name = "password", nullable = false)
     private String password;
 

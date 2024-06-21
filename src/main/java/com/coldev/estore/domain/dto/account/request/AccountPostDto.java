@@ -35,6 +35,9 @@ public class AccountPostDto {
     @NotBlank
     private String name;
 
+    @JsonProperty("description")
+    private String description;
+
     @NotNull
     private AccountRole role;
 
@@ -50,7 +53,7 @@ public class AccountPostDto {
     private String address;
 
     @Nullable
-    @JsonProperty("avatar_media_link")
-    private List<String> avatarMediaKeys;
+    @JsonProperty("media_id")
+    private Long mediaId;
 
 }
