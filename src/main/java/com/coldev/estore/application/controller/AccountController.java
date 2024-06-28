@@ -57,7 +57,7 @@ public class AccountController {
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> getUserInfo() throws IOException, BadRequestException {
         return ResponseEntity.ok(
-                accountService.getAccountById(authService.retrieveTokenizedAccountId())
+                accountService.getAccountDto(authService.retrieveTokenizedAccountId())
         );
     }
 
