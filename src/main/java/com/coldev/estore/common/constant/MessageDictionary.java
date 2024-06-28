@@ -28,4 +28,5 @@ public class MessageDictionary {
 
     public static final String NOT_NULL = "Cannot be empty or null";
     public static final String DATA_FOUND = "Data found";
+    public static final String DELETION_FAILED = "Item deletion failed, please check your parameters";
 }

@@ -4,6 +4,7 @@ import com.coldev.estore.common.enumerate.AccountRole;
 import com.coldev.estore.common.enumerate.Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.Nationalized;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -79,6 +81,12 @@ public class Account {
     @Column(name = "created_at")
     @Builder.Default
     private Date createdAt = new Date();
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @JsonIgnore
+    @ToString.Exclude
+    private List<CustomerOrder> customerOrders;
 
 
 }

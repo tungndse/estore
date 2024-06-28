@@ -4,6 +4,7 @@ import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,7 +13,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -96,6 +96,12 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "media_id")
     )
     private List<Media> subMediaList;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @JsonIgnore
+    @ToString.Exclude
+    private List<CustomerOrderItem> customerOrderItems;
 
 
 

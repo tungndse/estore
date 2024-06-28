@@ -2,6 +2,7 @@ package com.coldev.estore.infrastructure.service.implementation;
 
 import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.common.enumerate.ResponseLevel;
+import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.common.utility.SortUtils;
 import com.coldev.estore.common.utility.SpecificationUtils;
 import com.coldev.estore.config.exception.general.ItemNotFoundException;
@@ -197,5 +198,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Brand getBrandById(Long id) {
         return brandRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Long deleteProductById(Long id) {
+        Product product = this.getProductById(id);
+        if (product == null) return null;
+        else product.setStatus(Status.DELETED);
+        return productRepository.save(product).getId();
+
     }
 }
