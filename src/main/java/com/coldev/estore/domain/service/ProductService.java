@@ -29,4 +29,6 @@ public interface ProductService {
     List<Product> getProductList(Specification<Product> specification);
 
     Brand getBrandById(Long id);
+
+    Long deleteProductById(Long id);
 }

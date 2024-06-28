@@ -107,11 +107,38 @@ public class ProductController {
                     .totalItems(productGetDtoList.size()).build();
             return ResponseEntity.ok(response);
         } else {
-            ResponseObject<List<ProductGetDto>> response =responseBuilder.message(MessageDictionary.DATA_NOT_FOUND)
+            ResponseObject<List<ProductGetDto>> response = responseBuilder.message(MessageDictionary.DATA_NOT_FOUND)
                     .totalItems(0).build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+
+        //TODO check token
+
+        Long deletedProductId = productService.deleteProductById(id);
+
+        ResponseObject.ResponseObjectBuilder<?> responseObjectBuilder = ResponseObject.builder();
+
+        if (deletedProductId != null) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(responseObjectBuilder
+                            .message(MessageDictionary.ACTION_SUCCESS)
+                            .totalItems(1)
+                            .build()
+                    );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(responseObjectBuilder
+                            .message(MessageDictionary.DELETION_FAILED)
+                            .totalItems(0));
+        }
 
     }
 
