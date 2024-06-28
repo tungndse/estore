@@ -83,11 +83,5 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/user-info")
-    @PreAuthorize("permitAll()")
-    public ResponseEntity<?> getUserInfo() throws IOException, BadRequestException {
-        return ResponseEntity.ok(
-                accountService.getAccountById(authService.retrieveTokenizedAccountId())
-        );
-    }
+
 }

@@ -82,7 +82,8 @@ public class ProductController {
              @RequestParam(name = "quantity_min", required = false) Long quantityMin
             ) throws IOException, BadRequestException {
 
-        //AccountRole role = authService.retrieveTokenizedAccountRole();
+        /*AccountRole role = authService.retrieveTokenizedAccountRole();
+        if (role == AccountRole.CUSTOMER) productStatus = Status.ACTIVE;*/
 
         ProductFilterRequest filterRequest = ProductFilterRequest.builder()
                 .pageNo(page).pageSize(size)
