@@ -11,18 +11,22 @@ import com.coldev.estore.config.exception.mapper.ProductMapper;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.dto.product.request.ProductPostDto;
+import com.coldev.estore.domain.dto.product.request.ProductPutDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
-import com.coldev.estore.domain.entity.Brand;
-import com.coldev.estore.domain.entity.Combo;
-import com.coldev.estore.domain.entity.Media;
-import com.coldev.estore.domain.entity.Product;
+import com.coldev.estore.domain.entity.*;
 import com.coldev.estore.domain.service.ComboService;
 import com.coldev.estore.domain.service.MediaService;
 import com.coldev.estore.domain.service.ProductService;
 
 import com.coldev.estore.infrastructure.repository.BrandRepository;
+import com.coldev.estore.infrastructure.repository.ProductMediaRepository;
 import com.coldev.estore.infrastructure.repository.ProductRepository;
 import com.coldev.estore.infrastructure.repository.specification.MediaSpecifications;
+import com.coldev.estore.infrastructure.repository.specification.ProductComboSpecifications;
+import com.coldev.estore.infrastructure.repository.specification.ProductMediaSpecifications;
+import com.coldev.estore.infrastructure.repository.specification.ProductSpecifications;
+import com.google.common.collect.Sets;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -30,10 +34,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-
+@Log4j2
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -43,14 +49,16 @@ public class ProductServiceImpl implements ProductService {
     private final BrandRepository brandRepository;
     private final MediaService mediaService;
     private final ComboService comboService;
+    private final ProductMediaRepository productMediaRepository;
 
-    public ProductServiceImpl(ComboMapper comboMapper, ProductMapper productMapper, ProductRepository productRepository, BrandRepository brandRepository, MediaService mediaService, ComboService comboService) {
+    public ProductServiceImpl(ComboMapper comboMapper, ProductMapper productMapper, ProductRepository productRepository, BrandRepository brandRepository, MediaService mediaService, ComboService comboService, ProductMediaRepository productMediaRepository) {
         this.comboMapper = comboMapper;
         this.productMapper = productMapper;
         this.productRepository = productRepository;
         this.brandRepository = brandRepository;
         this.mediaService = mediaService;
         this.comboService = comboService;
+        this.productMediaRepository = productMediaRepository;
     }
 
 
@@ -185,7 +193,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> getProductPage(ProductFilterRequest filterRequest, Pageable pageable) {
         Specification<Product> specification =
-                Specification.allOf(SpecificationUtils.getSpecifications(filterRequest));
+                Specification.allOf(SpecificationUtils.getSpecifications(filterRequest))
+                //.and((ProductSpecifications.hasStatus(Status.ACTIVE)))
+                ;
 
         return productRepository.findAll(specification, pageable);
     }
@@ -207,5 +217,98 @@ public class ProductServiceImpl implements ProductService {
         else product.setStatus(Status.DELETED);
         return productRepository.save(product).getId();
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Product updateProduct(ProductPutDto productPutDto) {
+
+        Product productToBeUpdated = this.getProductById(productPutDto.getId());
+
+        if (productToBeUpdated == null)
+            throw new ItemNotFoundException(productPutDto.getId(), ConstantDictionary.PRODUCT);
+
+        Product.ProductBuilder updatingProductBuilder =
+                productMapper.updateNonNullFields(productToBeUpdated, productPutDto);
+
+        if (productPutDto.getBrandId() != null) {
+            Brand brand = this.getBrandById(productPutDto.getBrandId());
+            if (brand == null) throw new ItemNotFoundException(productPutDto.getBrandId(), ConstantDictionary.BRAND);
+            updatingProductBuilder.brand(brand);
+        }
+
+        if (productPutDto.getMainMediaId() != null) {
+            Media productMainMedia = mediaService.getMediaById(productPutDto.getMainMediaId());
+            if (productMainMedia != null) {
+                updatingProductBuilder.media(productMainMedia);
+            }
+        }
+
+        if (productPutDto.getSubMediaIds() != null && !productPutDto.getSubMediaIds().isEmpty()) {
+            /*Set<Long> updatingMediaIdSet = productPutDto.getSubMediaIds();
+            Set<Long> originalMediaIdSet = new HashSet<>(
+                    productMediaRepository
+                            .findAll(ProductMediaSpecifications.hasProductId(productToBeUpdated.getId()))
+                            .stream()
+                            .map(ProductMedia::getProductId)
+                            .toList()
+            );
+
+            log.info("Original Media IDs Set: " + originalMediaIdSet);
+            log.info("New Media IDs Set: " + updatingMediaIdSet);
+
+            Set<Long> intersection = Sets.intersection(updatingMediaIdSet, originalMediaIdSet);
+            log.info("Intersection Media IDs Set: " + intersection);
+
+            log.info("---- RESULT AS BELOW ---- ");
+            Set<Long> comparedToOriginalSet = Sets.symmetricDifference(originalMediaIdSet, intersection);
+            log.info("Media IDs Set [to be deleted]: " + comparedToOriginalSet);
+
+            Set<Long> comparedToUpdatedSet = Sets.symmetricDifference(updatingMediaIdSet, intersection);
+            log.info("Media IDs Set [to be added]: " + comparedToUpdatedSet);
+
+            productMediaRepository.delete(
+                    ProductMediaSpecifications.hasProductId(productToBeUpdated.getId())
+                            .and(ProductMediaSpecifications.equalsToAnyMediaId(comparedToOriginalSet))
+            );
+
+            for (Long mediaId : comparedToUpdatedSet) {
+                productMediaRepository.save(
+                        ProductMedia.builder()
+                                .productId(productToBeUpdated.getId())
+                                .mediaId(mediaId)
+                                .build()
+                );
+            }*/
+            this.handleMediaIds(productToBeUpdated, productPutDto.getSubMediaIds());
+        }
+
+        return productRepository.save(updatingProductBuilder.build());
+
+    }
+
+    private void handleMediaIds(Product productToBeUpdated, Set<Long> updatingMediaIdSet) {
+
+        Set<Long> originalMediaIdSet = productMediaRepository
+                .findAll(ProductMediaSpecifications.hasProductId(productToBeUpdated.getId()))
+                .stream()
+                .map(ProductMedia::getMediaId)
+                .collect(Collectors.toSet());
+
+        Set<Long> comparedToOriginalSet = Sets.symmetricDifference(originalMediaIdSet, updatingMediaIdSet);
+
+        productMediaRepository.delete(
+                ProductMediaSpecifications.hasProductId(productToBeUpdated.getId())
+                        .and(ProductMediaSpecifications.equalsToAnyMediaId(comparedToOriginalSet))
+        );
+
+        for (Long mediaId : updatingMediaIdSet) {
+            if (!originalMediaIdSet.contains(mediaId)) {
+                productMediaRepository.save(ProductMedia.builder()
+                        .productId(productToBeUpdated.getId())
+                        .mediaId(mediaId)
+                        .build());
+            }
+        }
     }
 }
