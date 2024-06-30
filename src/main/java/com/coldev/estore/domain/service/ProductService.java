@@ -3,6 +3,7 @@ package com.coldev.estore.domain.service;
 import com.coldev.estore.common.enumerate.ResponseLevel;
 import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.dto.product.request.ProductPostDto;
+import com.coldev.estore.domain.dto.product.request.ProductPutDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.entity.Brand;
 import com.coldev.estore.domain.entity.Product;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,4 +33,6 @@ public interface ProductService {
     Brand getBrandById(Long id);
 
     Long deleteProductById(Long id);
+
+    Product updateProduct(ProductPutDto productPutDto);
 }

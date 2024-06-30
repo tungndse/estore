@@ -29,4 +29,7 @@ public class MessageDictionary {
     public static final String NOT_NULL = "Cannot be empty or null";
     public static final String DATA_FOUND = "Data found";
     public static final String DELETION_FAILED = "Item deletion failed, please check your parameters";
+    public static final String MUST_BE_POSITIVE_INT = "This field must be a positive integer";
+    public static final String MUST_BE_POSITIVE_NUMBER = "This field must be a positive number";
+    public static final String NOT_EMPTY = "Cannot be empty or just whitespace";
 }

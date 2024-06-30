@@ -21,14 +21,17 @@ public class SpecificationUtils {
     public static List<Specification<Product>> getSpecifications(ProductFilterRequest filter) {
 
         return new ArrayList<>() {{
-            if (filter.getSearchKey() != null) add(GeneralSpecifications.nameContains(filter));
+            if (filter.getSearchKey() != null)
+                add(GeneralSpecifications.nameContains(filter.getSearchKey()));
             if (filter.getDescriptionContains() != null)
-                add(GeneralSpecifications.descriptionContains(filter));
+                add(GeneralSpecifications.descriptionContains(filter.getDescriptionContains()));
 
             if (filter.getCategory() != null) add(ProductSpecifications.hasCategory(filter));
             if (filter.getPriceMin() != null || filter.getPriceMax() != null)
                 add(ProductSpecifications.filterByPrices(filter));
             if (filter.getQuantityMin() != null) add(ProductSpecifications.hasQuantityMin(filter));
+
+            if (filter.getStatus() !=null) add(ProductSpecifications.hasStatus(filter));
 
         }};
     }
@@ -37,10 +40,12 @@ public class SpecificationUtils {
         List<Specification<Combo>> specifications = new ArrayList<>();
 
         if (comboFilterRequest.getSearchKey() != null) {
-            specifications.add(GeneralSpecifications.nameContains(comboFilterRequest));
+            specifications.add(
+                    GeneralSpecifications.nameContains(comboFilterRequest.getSearchKey()));
         }
         if (comboFilterRequest.getDescriptionContains() != null) {
-            specifications.add(GeneralSpecifications.descriptionContains(comboFilterRequest));
+            specifications.add(
+                    GeneralSpecifications.descriptionContains(comboFilterRequest.getDescriptionContains()));
         }
         if (comboFilterRequest.getDiscountPercentMin() != null) {
             specifications.add(ComboSpecifications.hasDiscountPercentGreaterThanOrEqualTo(comboFilterRequest.getDiscountPercentMin()));
@@ -74,10 +79,12 @@ public class SpecificationUtils {
         List<Specification<Account>> specifications = new ArrayList<>();
 
         if (filterRequest.getSearchKey() != null) {
-            specifications.add(GeneralSpecifications.nameContains(filterRequest));
+            specifications.add(
+                    GeneralSpecifications.nameContains(filterRequest.getSearchKey()));
         }
         if (filterRequest.getDescriptionContains() != null) {
-            specifications.add(GeneralSpecifications.descriptionContains(filterRequest));
+            specifications.add(
+                    GeneralSpecifications.descriptionContains(filterRequest.getDescriptionContains()));
         }
 
         if (filterRequest.getUsername() != null) {

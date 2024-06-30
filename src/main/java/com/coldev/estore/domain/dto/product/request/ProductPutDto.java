@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,37 +18,39 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class ProductPostDto {
+public class ProductPutDto {
+
+    public static final String NOT_EMPTY_OR_WHITESPACE_REGEX = "^\\S.*$";
+
+    @NotBlank(message = ConstantDictionary.ID + ": " + MessageDictionary.NOT_NULL)
+    private Long id;
 
     @JsonProperty("brand_id")
-    @NotBlank(message = ConstantDictionary.BRAND + ": " + MessageDictionary.NOT_NULL)
     private Long brandId;
 
-    @NotBlank(message = ConstantDictionary.NAME + ": " + MessageDictionary.NOT_NULL)
+    @Pattern(regexp = NOT_EMPTY_OR_WHITESPACE_REGEX,
+            message = ConstantDictionary.NAME + ": " + MessageDictionary.NOT_EMPTY)
     private String name;
 
-    @NotBlank(message = ConstantDictionary.DESCRIPTION + ": " + MessageDictionary.NOT_NULL)
+    @Pattern(regexp = NOT_EMPTY_OR_WHITESPACE_REGEX,
+            message = ConstantDictionary.DESCRIPTION + ": " + MessageDictionary.NOT_EMPTY)
     private String description;
 
-    @NotBlank(message = ConstantDictionary.QUANTITY + ": " + MessageDictionary.NOT_NULL)
     @Min(value = 0, message = ConstantDictionary.QUANTITY + ": " +
             MessageDictionary.MUST_BE_POSITIVE_INT)
     private Long quantity;
 
-    @NotBlank(message = ConstantDictionary.PRICE + ": " + MessageDictionary.NOT_NULL)
     @DecimalMin(value = "0.0", message = ConstantDictionary.PRICE + ": " +
             MessageDictionary.MUST_BE_POSITIVE_NUMBER)
     private BigDecimal price;
 
-    @Builder.Default
-    private Status status = Status.ACTIVE;
+    private Status status;
 
     private Category category;
 
@@ -59,4 +62,5 @@ public class ProductPostDto {
     @Nullable
     @JsonPropertyDescription("Can be left null")
     private Set<Long> subMediaIds;
+
 }

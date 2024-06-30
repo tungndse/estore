@@ -70,7 +70,7 @@ public class ComboServiceImpl implements ComboService {
         Combo savedCombo = comboRepository.save(newComboBuilder.build());
 
         if (payload.getProductIds() != null && !payload.getProductIds().isEmpty()) {
-            //TODO Experimental
+
             Set<Long> productIdSet = payload.getProductIds();
             List<Product> products = productService
                     .getProductList(ProductSpecifications.equalsToAnyId(productIdSet));
@@ -157,15 +157,6 @@ public class ComboServiceImpl implements ComboService {
 
             Set<Long> intersection = Sets.intersection(updatedProductIdSet, originalProductIdSet);
             log.info("Intersection Product IDs Set: " + intersection);
-
-           /*
-           Set<Long> difference = Sets.difference(updatedProductIdSet, originalProductIdSet);
-            log.info("DIFFERENCE: " + difference);
-            Set<Long> union = Sets.union(updatedProductIdSet, originalProductIdSet);
-            log.info("UNION: " + union);
-            Set<Long> symmetricDifference = Sets.symmetricDifference(updatedProductIdSet, originalProductIdSet);
-            log.info("SYMMETRIC_DIFFERENCE: " + symmetricDifference);
-            */
 
             log.info("---- RESULT AS BELOW ---- ");
             Set<Long> comparedToOriginalSet = Sets.symmetricDifference(originalProductIdSet, intersection);

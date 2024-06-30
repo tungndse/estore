@@ -8,6 +8,7 @@ import com.coldev.estore.config.exception.general.DataNotFoundException;
 import com.coldev.estore.domain.dto.ResponseObject;
 import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.dto.product.request.ProductPostDto;
+import com.coldev.estore.domain.dto.product.request.ProductPutDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.service.AuthService;
 import com.coldev.estore.domain.service.ProductService;
@@ -141,6 +142,27 @@ public class ProductController {
                             .totalItems(0));
         }
 
+    }
+
+    @PutMapping()
+    public ResponseEntity<?> update(@Valid @RequestBody ProductPutDto productPutDto)
+            throws IOException, BadRequestException, DataNotFoundException {
+        //Check admin
+        //AccountRole role = authService.retrieveTokenizedAccountRole();
+        //if (role != AccountRole.ADMIN) throw new BadRequestException(MessageDictionary.ACCESS_DENIED);
+
+        ProductGetDto productGetDto = productService.getProductDtoById(
+                productService.updateProduct(productPutDto).getId(),
+                ResponseLevel.ONE_LEVEL_DEPTH
+        );
+
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .totalItems(1)
+                        .message(MessageDictionary.ACTION_SUCCESS)
+                        .data(productGetDto)
+                        .build()
+        );
     }
 
 }
