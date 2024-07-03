@@ -4,16 +4,15 @@ import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -63,6 +62,12 @@ public class Combo {
     @ManyToMany(mappedBy = "combos", fetch = FetchType.LAZY)
     @JsonIgnore
     Collection<Product> products;
+
+    @OneToMany(mappedBy = "combo", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @JsonIgnore
+    @ToString.Exclude
+    private List<CustomerOrder> customerOrders;
 
     /*public Combo.ComboBuilder merge(ComboPostDto comboPostDto) {
         return Combo.builder()

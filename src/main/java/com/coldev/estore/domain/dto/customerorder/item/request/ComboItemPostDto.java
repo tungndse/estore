@@ -1,22 +1,17 @@
 package com.coldev.estore.domain.dto.customerorder.item.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerOrderItemPostDto implements Serializable {
+public class ComboItemPostDto {
 
-    @JsonProperty("product_id")
-    private Long productId;
+    private Long id;
     private Long quantity;
 
 }

@@ -16,6 +16,12 @@ public interface ComboService {
 
     ComboGetDto getComboDtoById(Long id, ResponseLevel responseLevel);
 
+    Combo getComboById(Long id);
+
+    Combo getComboByIdWithNullCheck(Long id);
+
+    Combo getComboByIdWithAvailabilityCheck(Long id);
+
     Combo updateCombo(Long id, ComboPostDto comboPostDto);
 
     List<Combo> getComboListByProductId(Long productId);

@@ -1,7 +1,7 @@
 package com.coldev.estore.common.enumerate;
 
 public enum OrderStatus {
-    AWAITING_PAYMENT,
+    ON_HOLD,
     PENDING,
     PROCESSING,
     DELIVERED,

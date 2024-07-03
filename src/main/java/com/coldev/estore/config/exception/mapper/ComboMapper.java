@@ -6,12 +6,15 @@ import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.entity.Combo;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR
         //, uses = {AddressMapper.class, PasswordValidator.class, FormMapper.class}
 )
 public interface ComboMapper {
+
+    ComboMapper INSTANCE = Mappers.getMapper(ComboMapper.class);
 
     default ComboGetDto toComboGetDto(Combo combo) {
         if (combo == null) return null;

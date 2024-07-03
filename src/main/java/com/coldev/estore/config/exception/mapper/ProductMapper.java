@@ -8,12 +8,15 @@ import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.entity.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR
         //, uses = {AddressMapper.class, PasswordValidator.class, FormMapper.class}
 )
 public interface ProductMapper {
+
+    ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     default Product toNewProduct(ProductPostDto payload) {
         if (payload == null) return null;

@@ -43,7 +43,6 @@ public class CustomerOrderItem {
     @Builder.Default
     private Date createdAt = new Date();
 
-    //TODO
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
     @JsonBackReference
@@ -51,7 +50,7 @@ public class CustomerOrderItem {
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     @JsonBackReference
     @JsonIgnore
     private CustomerOrder customerOrder;

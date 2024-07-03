@@ -12,4 +12,5 @@ public class ConstantDictionary {
     public static final String ID = "ID";
     public static final String QUANTITY = "Quantity";
     public static final String PRICE = "Price";
+    public static final String CUSTOMER_ORDER = "Customer Order";
 }

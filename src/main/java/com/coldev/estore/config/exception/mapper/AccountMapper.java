@@ -6,6 +6,7 @@ import com.coldev.estore.domain.dto.account.response.AccountGetDto;
 import com.coldev.estore.domain.entity.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
 
 import java.util.Date;
 
@@ -14,6 +15,8 @@ import java.util.Date;
         //, uses = {AddressMapper.class, PasswordValidator.class, FormMapper.class}
 )
 public interface AccountMapper {
+
+    AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);
 
     default Account.AccountBuilder toNewAccountBuilder(AccountPostDto payload) {
         if (payload == null) return null;

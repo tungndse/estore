@@ -8,13 +8,13 @@ import com.coldev.estore.domain.entity.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface AccountService {
 
     Account getAccountByUsername(String username);
     Account getAccountById(Long id);
+    Account getAccountByIdWithNullCheck(Long id);
     AccountGetDto getAccountDto(Long id);
     Account createAccount(AccountPostDto payload, boolean isAuthorized);
 

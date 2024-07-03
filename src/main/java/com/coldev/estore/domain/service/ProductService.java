@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,6 +23,12 @@ public interface ProductService {
 
     Product getProductById(Long id);
 
+    Product getProductByIdWithNullCheck(Long id);
+
+    Product getProductByIdWithAvailabilityCheck(Long id);
+
+    boolean checkProductAvailability(Product product);
+
     List<ProductGetDto> getProductDtoList(ProductFilterRequest filterRequest, ResponseLevel responseLevel);
 
     Page<Product> getProductPage(ProductFilterRequest filterRequest, Pageable pageable);
@@ -35,4 +40,6 @@ public interface ProductService {
     Long deleteProductById(Long id);
 
     Product updateProduct(ProductPutDto productPutDto);
+
+    void updateProductQuantity(Product product, Long newQuantity);
 }
