@@ -6,6 +6,7 @@ import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.common.utility.SortUtils;
 import com.coldev.estore.common.utility.SpecificationUtils;
 import com.coldev.estore.config.exception.general.ItemNotFoundException;
+import com.coldev.estore.config.exception.general.ItemUnavailableException;
 import com.coldev.estore.config.exception.mapper.ComboMapper;
 import com.coldev.estore.config.exception.mapper.ProductMapper;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
@@ -22,9 +23,7 @@ import com.coldev.estore.infrastructure.repository.BrandRepository;
 import com.coldev.estore.infrastructure.repository.ProductMediaRepository;
 import com.coldev.estore.infrastructure.repository.ProductRepository;
 import com.coldev.estore.infrastructure.repository.specification.MediaSpecifications;
-import com.coldev.estore.infrastructure.repository.specification.ProductComboSpecifications;
 import com.coldev.estore.infrastructure.repository.specification.ProductMediaSpecifications;
-import com.coldev.estore.infrastructure.repository.specification.ProductSpecifications;
 import com.google.common.collect.Sets;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -34,7 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -149,6 +147,27 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(Long id) {
         return productRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Product getProductByIdWithNullCheck(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id, ConstantDictionary.PRODUCT));
+    }
+
+    @Override
+    public Product getProductByIdWithAvailabilityCheck(Long id) {
+        Product product = this.getProductByIdWithNullCheck(id);
+
+        if (product.getQuantity() < 1 || product.getStatus() != Status.ACTIVE)
+            throw new ItemUnavailableException(id, ConstantDictionary.PRODUCT);
+
+        return product;
+    }
+
+    @Override
+    public boolean checkProductAvailability(Product product) {
+        return product.getQuantity() >= 1 && product.getStatus() == Status.ACTIVE;
     }
 
 
@@ -285,6 +304,21 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.save(updatingProductBuilder.build());
 
+    }
+
+    @Override
+    public void updateProductQuantity(Product product, Long orderedQuantity) {
+
+        if (orderedQuantity > product.getQuantity())
+            throw new ItemUnavailableException(
+                    product.getId(),
+                    ConstantDictionary.PRODUCT,
+                    "Product stock = " + product.getQuantity() + "; Ordered quantity = " + orderedQuantity
+            );
+
+        product.setQuantity(product.getQuantity() - orderedQuantity);
+
+        productRepository.save(product);
     }
 
     private void handleMediaIds(Product productToBeUpdated, Set<Long> updatingMediaIdSet) {

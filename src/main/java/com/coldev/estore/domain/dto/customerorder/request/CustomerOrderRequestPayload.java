@@ -1,45 +1,35 @@
 package com.coldev.estore.domain.dto.customerorder.request;
 
-import com.coldev.estore.common.constant.MessageDictionary;
-import com.coldev.estore.common.enumerate.OrderStatus;
+
 import com.coldev.estore.common.enumerate.PaymentMethod;
 import com.coldev.estore.domain.dto.customerorder.item.request.ComboItemPostDto;
 import com.coldev.estore.domain.dto.customerorder.item.request.CustomerOrderItemPostDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerOrderPostDto implements Serializable {
+public class CustomerOrderRequestPayload {
 
     @JsonProperty("customer_id")
-    //@NotNull(message = MessageDictionary.ACCOUNT_IS_REQUIRED)
     private Long accountId;
 
     private String description;
 
-    private OrderStatus status;
+    private String shipping_address;
 
     @JsonProperty("payment_method")
     private PaymentMethod paymentMethod;
 
-    @JsonProperty("shipping_address")
-    private String shippingAddress;
+    @JsonProperty("customer_order_item_list")
+    private List<CustomerOrderItemPostDto> customerOrderItemList;
 
-    @JsonProperty("product_list")
-    private List<CustomerOrderItemPostDto> customerOrderItemPostDtoList;
-
-    @JsonProperty("combo_list")
-    private List<ComboItemPostDto> comboItemPostDtoList;
-
+    @JsonProperty("combo_item_list")
+    private List<ComboItemPostDto> comboItemList;
 
 }

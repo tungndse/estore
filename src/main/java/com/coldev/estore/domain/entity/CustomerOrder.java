@@ -29,7 +29,7 @@ public class CustomerOrder {
 
     @Basic(fetch = FetchType.LAZY)
     @Nationalized
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
     @Basic(fetch = FetchType.LAZY)
@@ -64,6 +64,11 @@ public class CustomerOrder {
     @Column(name = "total_amount", nullable = false, precision = 19, scale = 4)
     private BigDecimal totalAmount;
 
+    @NotNull
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "net_amount", precision = 19, scale = 4)
+    private BigDecimal netAmount;
+
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "shipping_address", nullable = false)
     private String shippingAddress;
@@ -95,5 +100,13 @@ public class CustomerOrder {
     @JsonIgnore
     @ToString.Exclude
     private List<CustomerOrderItem> customerOrderItems;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "combo_id", referencedColumnName = "id")
+    @JsonBackReference
+    @JsonIgnore
+    private Combo combo;
+
+
 
 }

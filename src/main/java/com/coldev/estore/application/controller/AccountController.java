@@ -114,13 +114,13 @@ public class AccountController {
         );
     }
 
-    @PostMapping("/authorized")
+    /*@PostMapping("/authorized")
     @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<?> create(@Valid @RequestBody AccountPostDto payload)
             throws BadRequestException, IOException {
         return ResponseEntity.ok(
                 accountService.getAccountById(accountService.createAccount(payload, true).getId()));
-    }
+    }*/
 
 
 }

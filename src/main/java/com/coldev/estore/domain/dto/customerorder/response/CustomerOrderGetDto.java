@@ -4,6 +4,7 @@ import com.coldev.estore.common.enumerate.OrderStatus;
 import com.coldev.estore.common.enumerate.PaymentMethod;
 import com.coldev.estore.common.serializer.MoneyBigDecimalSerializer;
 import com.coldev.estore.domain.dto.account.response.AccountGetDto;
+import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.dto.customerorder.item.response.CustomerOrderItemGetDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -38,9 +39,6 @@ public class CustomerOrderGetDto implements Serializable {
     @JsonPropertyDescription("Default is COD, will support VNPAY")
     private PaymentMethod paymentMethod;
 
-    @JsonProperty("is_for_combo")
-    private Boolean isComboOrder;
-
     @JsonProperty("discount_total")
     @JsonSerialize(using = MoneyBigDecimalSerializer.class)
     private BigDecimal discountTotal;
@@ -48,6 +46,10 @@ public class CustomerOrderGetDto implements Serializable {
     @JsonProperty("total_amount")
     @JsonSerialize(using = MoneyBigDecimalSerializer.class)
     private BigDecimal totalAmount;
+
+    @JsonProperty("net_amount")
+    @JsonSerialize(using = MoneyBigDecimalSerializer.class)
+    private BigDecimal netAmount;
 
     @JsonProperty("order_date")
     @JsonPropertyDescription("Date that the order is placed")
@@ -65,4 +67,10 @@ public class CustomerOrderGetDto implements Serializable {
 
     @JsonProperty("customer_order_items")
     private List<CustomerOrderItemGetDto> customerOrderItemGetDtoList;
+
+    @JsonProperty("is_for_combo")
+    private Boolean isComboOrder;
+
+    @JsonProperty("for_combo")
+    private ComboGetDto comboGetDto;
 }

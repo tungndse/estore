@@ -23,8 +23,10 @@ import java.util.Date;
 public class CustomerOrderItemGetDto implements Serializable {
 
     private Long id;
+
     @JsonProperty("order_id")
     private Long orderId;
+
     private Long quantity;
 
     @JsonProperty("unit_price")

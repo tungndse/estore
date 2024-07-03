@@ -2,9 +2,11 @@ package com.coldev.estore.infrastructure.service.implementation;
 
 import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.common.enumerate.ResponseLevel;
+import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.common.utility.SortUtils;
 import com.coldev.estore.common.utility.SpecificationUtils;
 import com.coldev.estore.config.exception.general.ItemNotFoundException;
+import com.coldev.estore.config.exception.general.ItemUnavailableException;
 import com.coldev.estore.config.exception.mapper.ComboMapper;
 import com.coldev.estore.config.exception.mapper.ProductMapper;
 import com.coldev.estore.domain.dto.combo.request.ComboFilterRequest;
@@ -132,6 +134,30 @@ public class ComboServiceImpl implements ComboService {
         return null;
 
     }
+
+    @Override
+    public Combo getComboById(Long id) {
+        return comboRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Combo getComboByIdWithNullCheck(Long id) {
+        Combo combo = this.getComboById(id);
+        if (combo == null)
+            throw new ItemNotFoundException(id, ConstantDictionary.COMBO);
+        return combo;
+    }
+
+    @Override
+    public Combo getComboByIdWithAvailabilityCheck(Long id) {
+        Combo combo = this.getComboByIdWithNullCheck(id);
+
+        if (combo.getStatus() != Status.ACTIVE)
+            throw new ItemUnavailableException(id, ConstantDictionary.COMBO);
+
+        return combo;
+    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)

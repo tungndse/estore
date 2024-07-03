@@ -32,4 +32,5 @@ public class MessageDictionary {
     public static final String MUST_BE_POSITIVE_INT = "This field must be a positive integer";
     public static final String MUST_BE_POSITIVE_NUMBER = "This field must be a positive number";
     public static final String NOT_EMPTY = "Cannot be empty or just whitespace";
+    public static final String ITEM_NOT_AVAILABLE = "Item is not available at the moment";
 }

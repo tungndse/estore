@@ -10,6 +10,10 @@ public class ItemNotFoundException extends RuntimeException {
 
     }
 
+    public ItemNotFoundException(Long id, String itemType, String customMessage) {
+        super("Item " + itemType + " with id " + id + ": " + customMessage);
+    }
+
     public ItemNotFoundException(String message) {
         super(message);
     }

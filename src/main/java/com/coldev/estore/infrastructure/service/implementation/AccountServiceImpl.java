@@ -63,14 +63,22 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountById(Long id) {
+        return accountRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Account getAccountByIdWithNullCheck(Long id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException(id, ConstantDictionary.ACCOUNT));
-
     }
 
     @Override
     public AccountGetDto getAccountDto(Long id) {
         Account account = this.getAccountById(id);
+
+        if (account == null)
+            throw new ItemNotFoundException(id, ConstantDictionary.ACCOUNT);
+
         return accountMapper.toAccountGetDto(account);
     }
 
@@ -109,16 +117,19 @@ public class AccountServiceImpl implements AccountService {
 
         return accountPage.stream()
                 .map(account -> {
-                     AccountGetDto.AccountGetDtoBuilder accountGetDtoBuilder =
-                             accountMapper.toAccountGetDtoBuilder(account);
+                    AccountGetDto.AccountGetDtoBuilder accountGetDtoBuilder =
+                            accountMapper.toAccountGetDtoBuilder(account);
 
-                     switch (responseLevel) {
-                         case BASIC -> {}
-                         case ONE_LEVEL_DEPTH -> {}
-                         case TWO_LEVEL_DEPTH -> {}
-                     }
+                    switch (responseLevel) {
+                        case BASIC -> {
+                        }
+                        case ONE_LEVEL_DEPTH -> {
+                        }
+                        case TWO_LEVEL_DEPTH -> {
+                        }
+                    }
 
-                     return accountGetDtoBuilder.build();
+                    return accountGetDtoBuilder.build();
                 })
                 .toList();
     }
