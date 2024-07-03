@@ -29,6 +29,7 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     public static final String ITEM_NOT_FOUND_EXCEPTION = "ItemNotFoundException";
+    public static final String ITEM_UNAVAILABLE_EXCEPTION = "ItemUnavailableException";
     public static final String DUPLICATED_EXCEPTION = "DuplicatedException";
     public static final String ACTION_NOT_ALLOWED_EXCEPTION = "ActionNotAllowedException";
     public static final String INVALID_INPUT_EXCEPTION = "InvalidInputException";
@@ -68,6 +69,7 @@ public class GlobalExceptionHandler {
                 this.getErrorResponse(ex),
                 switch (exceptionClassName) {
                     case ITEM_NOT_FOUND_EXCEPTION -> HttpStatus.NOT_FOUND;
+                    case ITEM_UNAVAILABLE_EXCEPTION -> HttpStatus.BAD_REQUEST;
                     case DUPLICATED_EXCEPTION -> HttpStatus.BAD_REQUEST;
                     case ACTION_NOT_ALLOWED_EXCEPTION -> HttpStatus.BAD_REQUEST;
                     case INVALID_INPUT_EXCEPTION -> HttpStatus.BAD_REQUEST;
