@@ -313,7 +313,9 @@ public class ProductServiceImpl implements ProductService {
             throw new ItemUnavailableException(
                     product.getId(),
                     ConstantDictionary.PRODUCT,
-                    "Product stock = " + product.getQuantity() + "; Ordered quantity = " + orderedQuantity
+                    "Name="+product.getName() +
+                            "; ProductStock=" + product.getQuantity() +
+                            "; OrderedQuantity=" + orderedQuantity
             );
 
         product.setQuantity(product.getQuantity() - orderedQuantity);
