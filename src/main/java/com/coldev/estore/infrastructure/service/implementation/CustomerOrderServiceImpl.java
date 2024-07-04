@@ -148,19 +148,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
             List<CustomerOrderItem> customerOrderItemList = customerOrder.getCustomerOrderItems();
             for (CustomerOrderItem customerOrderItem : customerOrderItemList) {
 
-                // This is the classic way, only here for reference
-                /*
-                if (productQuantityMap.containsKey(customerOrderItem.getProduct().getId())) {
-                    productQuantityMap.compute(
-                            customerOrderItem.getProduct().getId(),
-                            (k, productQuantity) -> productQuantity + customerOrderItem.getQuantity()
-                    );
-
-                } else {
-                    productQuantityMap.put(customerOrderItem.getProduct().getId(), customerOrderItem.getQuantity());
-                }
-                */
-
                 Product product = customerOrderItem.getProduct();
                 Long productQuantity = customerOrderItem.getQuantity();
 
