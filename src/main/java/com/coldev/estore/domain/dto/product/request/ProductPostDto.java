@@ -4,6 +4,7 @@ import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.common.constant.MessageDictionary;
 import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import jakarta.validation.constraints.DecimalMin;
@@ -27,7 +28,9 @@ import java.util.Set;
 public class ProductPostDto {
 
     @JsonProperty("brand_id")
-    @NotBlank(message = ConstantDictionary.BRAND + ": " + MessageDictionary.NOT_NULL)
+    //@NotBlank(message = ConstantDictionary.BRAND + ": " + MessageDictionary.NOT_NULL)
+    @Nullable
+    @JsonIgnore
     private Long brandId;
 
     @NotBlank(message = ConstantDictionary.NAME + ": " + MessageDictionary.NOT_NULL)

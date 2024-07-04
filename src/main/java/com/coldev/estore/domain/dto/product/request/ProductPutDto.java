@@ -4,6 +4,7 @@ import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.common.constant.MessageDictionary;
 import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import jakarta.validation.constraints.DecimalMin;
@@ -32,6 +33,8 @@ public class ProductPutDto {
     private Long id;
 
     @JsonProperty("brand_id")
+    @JsonIgnore
+    @Nullable
     private Long brandId;
 
     @Pattern(regexp = NOT_EMPTY_OR_WHITESPACE_REGEX,

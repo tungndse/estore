@@ -43,6 +43,9 @@ public class ProductController {
         //AccountRole role = authService.retrieveTokenizedAccountRole();
         //if (role != AccountRole.ADMIN) throw new BadRequestException(MessageDictionary.ACCESS_DENIED);
 
+        //TODO Just a quick workaround since client doesn't do brand info
+        if (productPostDto.getBrandId() == null) productPostDto.setBrandId(1L);
+
         ProductGetDto productGetDto = productService.getProductDtoById(
                 productService.createNewProduct(productPostDto).getId(),
                 ResponseLevel.ONE_LEVEL_DEPTH
@@ -150,6 +153,9 @@ public class ProductController {
         //Check admin
         //AccountRole role = authService.retrieveTokenizedAccountRole();
         //if (role != AccountRole.ADMIN) throw new BadRequestException(MessageDictionary.ACCESS_DENIED);
+
+        //TODO Just a quick workaround since client doesn't do brand info
+        if (productPutDto.getBrandId() == null) productPutDto.setBrandId(1L);
 
         ProductGetDto productGetDto = productService.getProductDtoById(
                 productService.updateProduct(productPutDto).getId(),
