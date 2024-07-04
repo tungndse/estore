@@ -5,6 +5,7 @@ import com.coldev.estore.common.constant.MessageDictionary;
 import com.coldev.estore.common.enumerate.*;
 import com.coldev.estore.config.exception.general.BadRequestException;
 import com.coldev.estore.config.exception.general.DataNotFoundException;
+import com.coldev.estore.config.exception.general.ItemNotFoundException;
 import com.coldev.estore.domain.dto.ResponseObject;
 import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.dto.product.request.ProductPostDto;
@@ -147,12 +148,20 @@ public class ProductController {
 
     }
 
-    @PutMapping()
-    public ResponseEntity<?> update(@Valid @RequestBody ProductPutDto productPutDto)
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(
+            @PathVariable(name = "id") Long id,
+            @Valid @RequestBody ProductPutDto productPutDto
+    )
             throws IOException, BadRequestException, DataNotFoundException {
         //Check admin
         //AccountRole role = authService.retrieveTokenizedAccountRole();
         //if (role != AccountRole.ADMIN) throw new BadRequestException(MessageDictionary.ACCESS_DENIED);
+        //TODO Just a quick workaround because client want path parameter instead of dto
+        if (productPutDto.getId() == null) {
+            if (id != null) productPutDto.setId(id);
+            else throw new ItemNotFoundException("ID cannot be" + MessageDictionary.NOT_NULL);
+        }
 
         //TODO Just a quick workaround since client doesn't do brand info
         if (productPutDto.getBrandId() == null) productPutDto.setBrandId(1L);
