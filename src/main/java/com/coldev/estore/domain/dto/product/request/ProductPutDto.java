@@ -30,6 +30,7 @@ public class ProductPutDto {
     public static final String NOT_EMPTY_OR_WHITESPACE_REGEX = "^\\S.*$";
 
     @NotBlank(message = ConstantDictionary.ID + ": " + MessageDictionary.NOT_NULL)
+    @JsonIgnore
     private Long id;
 
     @JsonProperty("brand_id")
