@@ -3,11 +3,14 @@ package com.coldev.estore.infrastructure.service.implementation;
 import com.coldev.estore.common.enumerate.OrderStatus;
 import com.coldev.estore.config.exception.mapper.AccountMapper;
 import com.coldev.estore.config.exception.mapper.CustomerOrderMapper;
+import com.coldev.estore.config.exception.mapper.ProductMapper;
 import com.coldev.estore.domain.dto.account.response.AccountGetDto;
 import com.coldev.estore.domain.dto.customerorder.response.CustomerOrderGetDto;
 import com.coldev.estore.domain.dto.dashboard.response.Dashboard;
+import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.entity.CustomerOrder;
 import com.coldev.estore.domain.entity.CustomerOrderItem;
+import com.coldev.estore.domain.entity.Product;
 import com.coldev.estore.domain.service.AccountService;
 import com.coldev.estore.domain.service.CustomerOrderService;
 import com.coldev.estore.domain.service.DashboardService;
@@ -31,13 +34,15 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final CustomerOrderMapper customerOrderMapper;
     private final AccountMapper accountMapper;
+    private final ProductMapper productMapper;
     private final CustomerOrderService customerOrderService;
     private final AccountService accountService;
 
 
-    public DashboardServiceImpl(CustomerOrderMapper customerOrderMapper, AccountMapper accountMapper, CustomerOrderService customerOrderService, AccountService accountService) {
+    public DashboardServiceImpl(CustomerOrderMapper customerOrderMapper, AccountMapper accountMapper, ProductMapper productMapper, CustomerOrderService customerOrderService, AccountService accountService) {
         this.customerOrderMapper = customerOrderMapper;
         this.accountMapper = accountMapper;
+        this.productMapper = productMapper;
         this.customerOrderService = customerOrderService;
         this.accountService = accountService;
     }
@@ -107,6 +112,19 @@ public class DashboardServiceImpl implements DashboardService {
                 .map(entry -> accountMapper.toAccountGetDto(entry.getKey()))
                 .orElse(null);
 
+        // Find top 5 products ordered
+        List<ProductGetDto> topProducts = customerOrders.stream()
+                .flatMap(order -> customerOrderService.getCustomerOrderItemList(order.getId()).stream())
+                .collect(Collectors.groupingBy(
+                        CustomerOrderItem::getProduct, Collectors.summingLong(CustomerOrderItem::getQuantity)
+                ))
+                .entrySet().stream()
+                .sorted(Map.Entry.<Product, Long>comparingByValue().reversed())
+                .limit(5)
+                .map(entry -> productMapper.toProductGetDtoBuilder(entry.getKey()).build())
+                .toList();
+
+
         // Build and return the dashboard
         return Dashboard.builder()
                 .month(month)
@@ -115,6 +133,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .productSoldCount(productSoldCount)
                 .topCustomer(topCustomer)
                 .customerOrderGetDtoList(customerOrderGetDtoList)
+                .topFiveProductDtoList(topProducts)
                 .build();
     }
 
