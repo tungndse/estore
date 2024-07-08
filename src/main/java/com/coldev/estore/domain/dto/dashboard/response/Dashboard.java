@@ -2,6 +2,7 @@ package com.coldev.estore.domain.dto.dashboard.response;
 
 import com.coldev.estore.domain.dto.account.response.AccountGetDto;
 import com.coldev.estore.domain.dto.customerorder.response.CustomerOrderGetDto;
+import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,9 @@ public class Dashboard implements Serializable {
 
     @JsonProperty("top_customer")
     private AccountGetDto topCustomer;
+
+    @JsonProperty("top_5_products")
+    private List<ProductGetDto> topFiveProductDtoList;
 
     @JsonProperty("customer_orders")
     private List<CustomerOrderGetDto> customerOrderGetDtoList;
