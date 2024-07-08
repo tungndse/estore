@@ -38,7 +38,7 @@ public class ResponseObject<T> {
 
     }
 
-    public static ResponseObjectBuilder builder() {
+    public static <T> ResponseObjectBuilder <T> builder() {
         return new ResponseObjectBuilder<>();
     }
 

@@ -11,6 +11,7 @@ import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.dto.product.request.ProductPostDto;
 import com.coldev.estore.domain.dto.product.request.ProductPutDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
+import com.coldev.estore.domain.entity.Product;
 import com.coldev.estore.domain.service.AuthService;
 import com.coldev.estore.domain.service.ProductService;
 import jakarta.validation.Valid;
@@ -53,7 +54,7 @@ public class ProductController {
         );
 
         return ResponseEntity.ok(
-                ResponseObject.builder()
+                ResponseObject.<ProductGetDto>builder()
                         .totalItems(1)
                         .message(MessageDictionary.ACTION_SUCCESS)
                         .data(productGetDto)
@@ -63,7 +64,6 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> one(@PathVariable Long id) {
-
         return ResponseEntity.ok(
                 ResponseObject.builder()
                         .totalItems(1)
@@ -117,8 +117,6 @@ public class ProductController {
                     .totalItems(0).build();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
-
     }
 
 
@@ -152,8 +150,7 @@ public class ProductController {
     public ResponseEntity<?> update(
             @PathVariable(name = "id") Long id,
             @Valid @RequestBody ProductPutDto productPutDto
-    )
-            throws IOException, BadRequestException, DataNotFoundException {
+    ) throws IOException, BadRequestException, DataNotFoundException {
         //Check admin
         //AccountRole role = authService.retrieveTokenizedAccountRole();
         //if (role != AccountRole.ADMIN) throw new BadRequestException(MessageDictionary.ACCESS_DENIED);
@@ -166,10 +163,9 @@ public class ProductController {
         //TODO Just a quick workaround since client doesn't do brand info
         if (productPutDto.getBrandId() == null) productPutDto.setBrandId(1L);
 
+        Product product = productService.updateProduct(productPutDto);
         ProductGetDto productGetDto = productService.getProductDtoById(
-                productService.updateProduct(productPutDto).getId(),
-                ResponseLevel.ONE_LEVEL_DEPTH
-        );
+                product.getId(), ResponseLevel.ONE_LEVEL_DEPTH);
 
         return ResponseEntity.ok(
                 ResponseObject.builder()

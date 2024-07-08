@@ -2,14 +2,13 @@ package com.coldev.estore.common.utility;
 
 import com.coldev.estore.domain.dto.account.request.AccountFilerRequest;
 import com.coldev.estore.domain.dto.combo.request.ComboFilterRequest;
+import com.coldev.estore.domain.dto.customerorder.request.CustomerOrderFilterRequest;
 import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.entity.Account;
 import com.coldev.estore.domain.entity.Combo;
+import com.coldev.estore.domain.entity.CustomerOrder;
 import com.coldev.estore.domain.entity.Product;
-import com.coldev.estore.infrastructure.repository.specification.AccountSpecifications;
-import com.coldev.estore.infrastructure.repository.specification.ComboSpecifications;
-import com.coldev.estore.infrastructure.repository.specification.GeneralSpecifications;
-import com.coldev.estore.infrastructure.repository.specification.ProductSpecifications;
+import com.coldev.estore.infrastructure.repository.specification.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
@@ -104,5 +103,25 @@ public class SpecificationUtils {
         }
 
         return specifications;
+    }
+
+    public static List<Specification<CustomerOrder>> getSpecifications(CustomerOrderFilterRequest filterRequest) {
+        List<Specification<CustomerOrder>> specifications = new ArrayList<>();
+
+        if (filterRequest.getSearchKey() != null) {
+            specifications.add(
+                    GeneralSpecifications.nameContains(filterRequest.getSearchKey()));
+        }
+        if (filterRequest.getDescriptionContains() != null) {
+            specifications.add(
+                    GeneralSpecifications.descriptionContains(filterRequest.getDescriptionContains()));
+        }
+
+        if (filterRequest.getStatus() != null) {
+            specifications.add(CustomerOrderSpecifications.hasStatus(filterRequest.getStatus()));
+        }
+
+        return specifications;
+
     }
 }
