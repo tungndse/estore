@@ -2,7 +2,6 @@ package com.coldev.estore.infrastructure.service.implementation;
 
 import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.common.enumerate.OrderStatus;
-import com.coldev.estore.common.utility.CalculatorUtils;
 import com.coldev.estore.config.exception.general.ItemNotFoundException;
 import com.coldev.estore.config.exception.general.ItemUnavailableException;
 import com.coldev.estore.config.exception.mapper.CustomerOrderMapper;
@@ -75,11 +74,15 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                             .customer(customer)
                             .isComboOrder(false);
 
-            BigDecimal totalAmount = CalculatorUtils.sum(
+            /*BigDecimal totalAmount = CalculatorUtils.sum(
                     customerOrderItemList.stream()
                             .map(CustomerOrderItem::getTotalPrice)
                             .toList()
-            );
+            );*/
+
+            BigDecimal totalAmount = customerOrderItemList.stream()
+                    .map(CustomerOrderItem::getTotalPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             CustomerOrder customerOrder = customerOrderBuilder
                     .totalAmount(totalAmount)
@@ -106,11 +109,16 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                                 .customerOrderItems(customerOrderItemList)
                                 .customer(customer)
                                 .isComboOrder(true);
-                BigDecimal orderTotalAmount = CalculatorUtils.sum(
+                /*BigDecimal orderTotalAmount = CalculatorUtils.sum(
                         customerOrderItemList.stream()
                                 .map(CustomerOrderItem::getTotalPrice)
                                 .toList()
-                );
+                );*/
+
+                BigDecimal orderTotalAmount =
+                        customerOrderItemList.stream()
+                                .map(CustomerOrderItem::getTotalPrice)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 BigDecimal orderComboDiscount = BigDecimal.ZERO;
 

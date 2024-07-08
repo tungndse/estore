@@ -33,4 +33,5 @@ public class MessageDictionary {
     public static final String MUST_BE_POSITIVE_NUMBER = "This field must be a positive number";
     public static final String NOT_EMPTY = "Cannot be empty or just whitespace";
     public static final String ITEM_NOT_AVAILABLE = "Item is not available at the moment";
+    public static final String VNPAY_GOT_PROBLEM = "Something wrong with VN Pay at the moment, try again later";
 }

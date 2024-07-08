@@ -12,10 +12,7 @@ import com.coldev.estore.domain.service.CustomerOrderService;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -71,6 +68,37 @@ public class CustomerOrderController {
                         .build()
         );
 
+    }
+
+    @GetMapping()
+    public ResponseEntity<?> find() {
+        return null;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> one(@PathVariable Long id) {
+        return null;
+    }
+
+    @PutMapping("/{id}/accept")
+    public ResponseEntity<?> accept(@PathVariable Long id) {
+        return null;
+    }
+    @PutMapping("/{id}/decline")
+    public ResponseEntity<?> decline(@PathVariable Long id) {
+        return null;
+    }
+    @PutMapping("/{id}/deliver/begin")
+    public ResponseEntity<?> beginDelivery(@PathVariable Long id) {
+        return null;
+    }
+    @PutMapping("/{id}/deliver/finish")
+    public ResponseEntity<?> finishDelivery(@PathVariable Long id) {
+        return null;
+    }
+    @PutMapping("/{id}/complete")
+    public ResponseEntity<?> complete(@PathVariable Long id) {
+        return null;
     }
 
 

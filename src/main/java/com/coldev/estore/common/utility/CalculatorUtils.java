@@ -11,7 +11,6 @@ public class CalculatorUtils {
         for (BigDecimal bigDecimal : bigDecimals) {
             sum = sum.add(bigDecimal);
         }
-
         return sum;
     }
 
