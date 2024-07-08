@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, Long>,
         JpaSpecificationExecutor<CustomerOrder> {
+
+
 }
