@@ -2,15 +2,18 @@ package com.coldev.estore.application.controller;
 
 
 import com.coldev.estore.common.constant.MessageDictionary;
-import com.coldev.estore.common.enumerate.PaymentMethod;
-import com.coldev.estore.common.enumerate.ResponseLevel;
+import com.coldev.estore.common.enumerate.*;
 import com.coldev.estore.domain.dto.ResponseObject;
+import com.coldev.estore.domain.dto.customerorder.request.CustomerOrderFilterRequest;
 import com.coldev.estore.domain.dto.customerorder.request.CustomerOrderRequestPayload;
 import com.coldev.estore.domain.dto.customerorder.response.CustomerOrderGetDto;
+import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
+import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.entity.CustomerOrder;
 import com.coldev.estore.domain.service.CustomerOrderService;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +50,7 @@ public class CustomerOrderController {
         // -> placeCustomerOrders(ids) -> change status of all orders into PENDING, save and return the id list
         if (paymentMethod == PaymentMethod.COD) {
             customerOrderService.placeCustomerOrders(createdCustomerOrderIdList);
+            customerOrderService.completeCustomerOrders(createdCustomerOrderIdList);
         }
 
         // Call service for building a getDtoList for CustomerOrders above
@@ -71,35 +75,54 @@ public class CustomerOrderController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> find() {
-        return null;
+    public ResponseEntity<?> find(@RequestParam(name = "page", defaultValue = "0") int page,
+                                  @RequestParam(name = "size", defaultValue = "100") int size,
+                                  @RequestParam(name = "status", required = false) OrderStatus status,
+                                  @RequestParam(name = "search_key", required = false) String searchKey,
+                                  @RequestParam(name = "description_contains", required = false) String descriptionContains,
+                                  @RequestParam(name = "sort_by", required = false) String sortBy,
+                                  @RequestParam(name = "sort_type", required = false) SortType sortType) {
+        CustomerOrderFilterRequest filterRequest = CustomerOrderFilterRequest.builder()
+                .pageNo(page).pageSize(size)
+                .sortOrder(sortType).sortAttribute(sortBy)
+                .status(status)
+                .searchKey(searchKey)
+                .descriptionContains(descriptionContains)
+                .build();
+
+
+        List<CustomerOrderGetDto> customerOrderGetDtoList = customerOrderService.getCustomerOrderDtoList(
+                filterRequest, ResponseLevel.ONE_LEVEL_DEPTH
+        );
+
+        ResponseObject.ResponseObjectBuilder<List<CustomerOrderGetDto>> responseBuilder =
+                ResponseObject.builder();
+
+        if (!customerOrderGetDtoList.isEmpty()) {
+            ResponseObject<List<CustomerOrderGetDto>> response = responseBuilder
+                    .message(MessageDictionary.DATA_FOUND)
+                    .data(customerOrderGetDtoList)
+                    .totalItems(customerOrderGetDtoList.size()).build();
+            return ResponseEntity.ok(response);
+        } else {
+            ResponseObject<List<CustomerOrderGetDto>> response = responseBuilder.message(MessageDictionary.DATA_NOT_FOUND)
+                    .totalItems(0).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> one(@PathVariable Long id) {
-        return null;
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .totalItems(1)
+                        .message(MessageDictionary.DATA_FOUND)
+                        .data(customerOrderService.getCustomerOrderDtoById(id, ResponseLevel.ONE_LEVEL_DEPTH))
+                        .build()
+        );
     }
 
-    @PutMapping("/{id}/accept")
-    public ResponseEntity<?> accept(@PathVariable Long id) {
-        return null;
-    }
-    @PutMapping("/{id}/decline")
-    public ResponseEntity<?> decline(@PathVariable Long id) {
-        return null;
-    }
-    @PutMapping("/{id}/deliver/begin")
-    public ResponseEntity<?> beginDelivery(@PathVariable Long id) {
-        return null;
-    }
-    @PutMapping("/{id}/deliver/finish")
-    public ResponseEntity<?> finishDelivery(@PathVariable Long id) {
-        return null;
-    }
-    @PutMapping("/{id}/complete")
-    public ResponseEntity<?> complete(@PathVariable Long id) {
-        return null;
-    }
+
 
 
 }

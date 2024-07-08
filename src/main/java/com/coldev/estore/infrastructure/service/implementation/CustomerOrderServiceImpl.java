@@ -2,12 +2,16 @@ package com.coldev.estore.infrastructure.service.implementation;
 
 import com.coldev.estore.common.constant.ConstantDictionary;
 import com.coldev.estore.common.enumerate.OrderStatus;
+import com.coldev.estore.common.enumerate.ResponseLevel;
+import com.coldev.estore.common.utility.SortUtils;
+import com.coldev.estore.common.utility.SpecificationUtils;
 import com.coldev.estore.config.exception.general.ItemNotFoundException;
 import com.coldev.estore.config.exception.general.ItemUnavailableException;
 import com.coldev.estore.config.exception.mapper.CustomerOrderMapper;
 import com.coldev.estore.domain.dto.customerorder.item.request.ComboItemPostDto;
 import com.coldev.estore.domain.dto.customerorder.item.request.CustomerOrderItemPostDto;
 import com.coldev.estore.domain.dto.customerorder.item.response.CustomerOrderItemGetDto;
+import com.coldev.estore.domain.dto.customerorder.request.CustomerOrderFilterRequest;
 import com.coldev.estore.domain.dto.customerorder.request.CustomerOrderRequestPayload;
 import com.coldev.estore.domain.dto.customerorder.response.CustomerOrderGetDto;
 import com.coldev.estore.domain.entity.*;
@@ -20,6 +24,9 @@ import com.coldev.estore.infrastructure.repository.CustomerOrderRepository;
 import com.coldev.estore.infrastructure.repository.specification.CustomerOrderItemSpecifications;
 import com.coldev.estore.infrastructure.repository.specification.ProductSpecifications;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -260,6 +267,28 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<Long> completeCustomerOrders(List<Long> customerOrderIdList) {
+        List<CustomerOrder> customerOrders = customerOrderRepository.findAllById(customerOrderIdList);
+
+        // Check for missing orders
+        if (customerOrders.size() != customerOrderIdList.size()) {
+            throw new ItemNotFoundException("Some orders were not found");
+        }
+
+        // Update each order's status and order date
+        for (CustomerOrder customerOrder : customerOrders) {
+            customerOrder.setStatus(OrderStatus.COMPLETED);
+            customerOrder.setOrderDate(new Date());
+        }
+
+        // Save all orders in batch
+        customerOrderRepository.saveAll(customerOrders);
+
+        return customerOrderIdList;
+    }
+
+    @Override
     public List<CustomerOrderGetDto> getCustomerOrderDtoListByIds(List<Long> createdCustomerOrderIdList) {
 
         return createdCustomerOrderIdList.stream()
@@ -301,5 +330,55 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         if (customerOrder == null) throw new ItemNotFoundException(id, ConstantDictionary.CUSTOMER_ORDER);
 
         return customerOrder;
+    }
+
+    @Override
+    public List<CustomerOrderGetDto> getCustomerOrderDtoList(
+            CustomerOrderFilterRequest filterRequest, ResponseLevel responseLevel) {
+        Pageable pageable = SortUtils.getPagination(
+                filterRequest.getPageSize(), filterRequest.getPageNo(),
+                filterRequest.getSortOrder(), filterRequest.getSortAttribute());
+
+        Page<CustomerOrder> customerOrderPage = this.getCustomerOrderPage(filterRequest, pageable);
+
+        return customerOrderPage.stream()
+                .map(customerOrder -> {
+                    CustomerOrderGetDto.CustomerOrderGetDtoBuilder customerOrderGetDtoBuilder =
+                            customerOrderMapper.toCustomerOrderGetDtoBuilder(customerOrder);
+
+                    switch (responseLevel) {
+                        case BASIC -> {
+                        }
+                        case ONE_LEVEL_DEPTH -> {
+                            //
+                        }
+                        case TWO_LEVEL_DEPTH -> {
+                            // Optional Later
+                        }
+                    }
+
+                    return customerOrderGetDtoBuilder.build();
+                })
+                .toList();
+    }
+
+    @Override
+    public CustomerOrderGetDto getCustomerOrderDtoById(Long id, ResponseLevel responseLevel) {
+        CustomerOrder product = customerOrderRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(id, ConstantDictionary.CUSTOMER_ORDER));
+
+        CustomerOrderGetDto.CustomerOrderGetDtoBuilder customerOrderGetDtoBuilder =
+                customerOrderMapper.toCustomerOrderGetDtoBuilder(product);
+
+        return customerOrderGetDtoBuilder.build();
+    }
+
+    private Page<CustomerOrder> getCustomerOrderPage(CustomerOrderFilterRequest filterRequest, Pageable pageable) {
+
+        Specification<CustomerOrder> specification =
+                Specification.allOf(SpecificationUtils.getSpecifications(filterRequest))
+                ;
+
+        return customerOrderRepository.findAll(specification, pageable);
     }
 }

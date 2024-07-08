@@ -9,12 +9,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductFilterRequest extends FilterRequest {
+public class ProductFilterRequest extends FilterRequest implements Serializable {
 
     private Category category;
 
