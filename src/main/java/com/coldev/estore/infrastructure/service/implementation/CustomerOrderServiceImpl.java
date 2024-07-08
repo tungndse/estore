@@ -84,11 +84,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                             .customer(customer)
                             .isComboOrder(false);
 
-            /*BigDecimal totalAmount = CalculatorUtils.sum(
-                    customerOrderItemList.stream()
-                            .map(CustomerOrderItem::getTotalPrice)
-                            .toList()
-            );*/
 
             BigDecimal totalAmount = customerOrderItemList.stream()
                     .map(CustomerOrderItem::getTotalPrice)
@@ -119,11 +114,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
                                 .customerOrderItems(customerOrderItemList)
                                 .customer(customer)
                                 .isComboOrder(true);
-                /*BigDecimal orderTotalAmount = CalculatorUtils.sum(
-                        customerOrderItemList.stream()
-                                .map(CustomerOrderItem::getTotalPrice)
-                                .toList()
-                );*/
+
 
                 BigDecimal orderTotalAmount =
                         customerOrderItemList.stream()
@@ -386,6 +377,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
         return customerOrderItemRepository.findAll(CustomerOrderItemSpecifications.hasCustomerOrderId(id));
     }
 
+    @Override
+    public List<CustomerOrderItem> getCustomerOrderItemListByCustomerOrderIdList(List<Long> customerOrderIdList) {
+        return customerOrderItemRepository.findByCustomerOrderIdIn(customerOrderIdList);
+    }
 
 
     private Page<CustomerOrder> getCustomerOrderPage(CustomerOrderFilterRequest filterRequest, Pageable pageable) {

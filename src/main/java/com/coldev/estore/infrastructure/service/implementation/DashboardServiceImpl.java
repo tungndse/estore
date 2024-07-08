@@ -16,13 +16,13 @@ import com.coldev.estore.domain.service.CustomerOrderService;
 import com.coldev.estore.domain.service.DashboardService;
 import com.coldev.estore.infrastructure.repository.specification.CustomerOrderSpecifications;
 import lombok.extern.log4j.Log4j2;
-import org.hibernate.query.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Month;
 import java.time.Year;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -68,20 +68,57 @@ public class DashboardServiceImpl implements DashboardService {
             // month != null & year = null
             year = Year.now();
             specification = specification.and(CustomerOrderSpecifications.hasCurrentYear())
-            .and(CustomerOrderSpecifications.hasMonth(month.getValue()));
+                    .and(CustomerOrderSpecifications.hasMonth(month.getValue()));
         }
 
         specification = specification.and(CustomerOrderSpecifications.hasStatus(OrderStatus.COMPLETED));
 
         List<CustomerOrder> customerOrders = customerOrderService.findCustomerOrderListBySpecification(
-               specification
+                specification
         );
+
+        /*if (customerOrders.isEmpty()) {
+            return Dashboard.builder()
+                    .month(month)
+                    .year(year)
+                    .build();
+        } else {
+            // load the orders with items
+            for (CustomerOrder customerOrder : customerOrders) {
+                List<CustomerOrderItem> customerOrderItemList =
+                        customerOrderService.getCustomerOrderItemList(customerOrder.getId());
+                if (!customerOrderItemList.isEmpty()) {
+                    customerOrder.setCustomerOrderItems(customerOrderItemList);
+                }
+            }
+        }*/
 
         if (customerOrders.isEmpty()) {
             return Dashboard.builder()
                     .month(month)
                     .year(year)
                     .build();
+        } else {
+            // Collect all CustomerOrder IDs
+            List<Long> customerOrderIds = customerOrders.stream()
+                    .map(CustomerOrder::getId)
+                    .collect(Collectors.toList());
+
+            // Fetch all CustomerOrderItems in a single query
+            List<CustomerOrderItem> allCustomerOrderItems =
+                    customerOrderService.getCustomerOrderItemListByCustomerOrderIdList(customerOrderIds);
+
+            // Group CustomerOrderItems by CustomerOrder ID
+            Map<Long, List<CustomerOrderItem>> itemsByOrderId = allCustomerOrderItems.stream()
+                    .collect(Collectors.groupingBy((CustomerOrderItem customerOrderItem) ->
+                            customerOrderItem.getCustomerOrder().getId()));
+
+            // Set CustomerOrderItems for each CustomerOrder
+            for (CustomerOrder customerOrder : customerOrders) {
+                List<CustomerOrderItem> customerOrderItemList = itemsByOrderId
+                        .getOrDefault(customerOrder.getId(), Collections.emptyList());
+                customerOrder.setCustomerOrderItems(customerOrderItemList);
+            }
         }
 
         // Calculate total income
@@ -91,11 +128,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         // Calculate product sold count
         Long productSoldCount = customerOrders.stream()
-                .flatMap(order -> {
-                    List<CustomerOrderItem> customerOrderItemList =
-                            customerOrderService.getCustomerOrderItemList(order.getId());
-                    return customerOrderItemList.stream();
-                })
+                .flatMap(order -> order.getCustomerOrderItems().stream())
                 .mapToLong(CustomerOrderItem::getQuantity)
                 .sum();
 
@@ -114,7 +147,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         // Find top 5 products ordered
         List<ProductGetDto> topProducts = customerOrders.stream()
-                .flatMap(order -> customerOrderService.getCustomerOrderItemList(order.getId()).stream())
+                .flatMap(order -> order.getCustomerOrderItems().stream())
                 .collect(Collectors.groupingBy(
                         CustomerOrderItem::getProduct, Collectors.summingLong(CustomerOrderItem::getQuantity)
                 ))

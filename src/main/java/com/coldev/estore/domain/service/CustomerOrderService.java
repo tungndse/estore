@@ -2,7 +2,6 @@ package com.coldev.estore.domain.service;
 
 import com.coldev.estore.common.enumerate.ResponseLevel;
 import com.coldev.estore.domain.dto.customerorder.request.CustomerOrderFilterRequest;
-import com.coldev.estore.domain.dto.customerorder.request.CustomerOrderPostDto;
 import com.coldev.estore.domain.dto.customerorder.request.CustomerOrderRequestPayload;
 import com.coldev.estore.domain.dto.customerorder.response.CustomerOrderGetDto;
 import com.coldev.estore.domain.entity.CustomerOrder;
@@ -10,8 +9,6 @@ import com.coldev.estore.domain.entity.CustomerOrderItem;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Month;
-import java.time.Year;
 import java.util.List;
 
 public interface CustomerOrderService {
@@ -36,6 +33,8 @@ public interface CustomerOrderService {
     List<CustomerOrder> findCustomerOrderListBySpecification(Specification<CustomerOrder> specification);
 
     List<CustomerOrderItem> getCustomerOrderItemList(Long id);
+
+    List<CustomerOrderItem> getCustomerOrderItemListByCustomerOrderIdList(List<Long> customerOrderIdList);
 
 
 }
