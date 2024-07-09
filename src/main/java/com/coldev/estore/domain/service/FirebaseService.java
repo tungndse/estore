@@ -1,6 +1,5 @@
 package com.coldev.estore.domain.service;
 
-import com.coldev.estore.config.firebase.FirebaseProperties;
 import com.coldev.estore.domain.dto.media.response.MediaResponse;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;

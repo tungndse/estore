@@ -6,10 +6,8 @@ import com.coldev.estore.domain.dto.product.request.ProductFilterRequest;
 import com.coldev.estore.domain.entity.Combo;
 import com.coldev.estore.domain.entity.Product;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
 import java.util.Set;
 
 public class ProductSpecifications {

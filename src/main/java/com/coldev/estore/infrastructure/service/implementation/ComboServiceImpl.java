@@ -13,16 +13,20 @@ import com.coldev.estore.domain.dto.combo.request.ComboFilterRequest;
 import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
 import com.coldev.estore.domain.dto.product.response.ProductGetDto;
-import com.coldev.estore.domain.entity.*;
+import com.coldev.estore.domain.entity.Combo;
+import com.coldev.estore.domain.entity.Media;
+import com.coldev.estore.domain.entity.Product;
+import com.coldev.estore.domain.entity.ProductCombo;
 import com.coldev.estore.domain.service.ComboService;
 import com.coldev.estore.domain.service.MediaService;
 import com.coldev.estore.domain.service.ProductService;
 import com.coldev.estore.infrastructure.repository.ComboRepository;
 import com.coldev.estore.infrastructure.repository.ProductComboRepository;
-import com.coldev.estore.infrastructure.repository.specification.*;
+import com.coldev.estore.infrastructure.repository.specification.ComboSpecifications;
+import com.coldev.estore.infrastructure.repository.specification.ProductComboSpecifications;
+import com.coldev.estore.infrastructure.repository.specification.ProductSpecifications;
 import com.google.common.collect.Sets;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +35,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 
 @Service
@@ -298,6 +305,13 @@ public class ComboServiceImpl implements ComboService {
                 Specification.allOf(SpecificationUtils.getSpecifications(comboFilterRequest));
 
         return comboRepository.findAll(specification, pageable);
+    }
+
+    @Override
+    public Combo deleteCombo(Long id) {
+        Combo combo = this.getComboByIdWithNullCheck(id);
+        combo.setStatus(Status.DELETED);
+        return comboRepository.save(combo);
     }
 
     private Combo mergeFromUpdate(Combo combo, ComboPostDto comboPostDto) {

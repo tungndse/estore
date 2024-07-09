@@ -6,8 +6,6 @@ import com.coldev.estore.domain.dto.media.response.MediaResponse;
 import com.coldev.estore.domain.service.FirebaseService;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

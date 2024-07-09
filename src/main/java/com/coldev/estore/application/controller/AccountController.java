@@ -10,10 +10,8 @@ import com.coldev.estore.domain.dto.ResponseObject;
 import com.coldev.estore.domain.dto.account.request.AccountFilerRequest;
 import com.coldev.estore.domain.dto.account.request.AccountPostDto;
 import com.coldev.estore.domain.dto.account.response.AccountGetDto;
-import com.coldev.estore.domain.dto.product.response.ProductGetDto;
 import com.coldev.estore.domain.service.AccountService;
 import com.coldev.estore.domain.service.AuthService;
-import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -114,13 +112,6 @@ public class AccountController {
         );
     }
 
-    /*@PostMapping("/authorized")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    ResponseEntity<?> create(@Valid @RequestBody AccountPostDto payload)
-            throws BadRequestException, IOException {
-        return ResponseEntity.ok(
-                accountService.getAccountById(accountService.createAccount(payload, true).getId()));
-    }*/
 
 
 }

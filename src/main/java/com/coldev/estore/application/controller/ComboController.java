@@ -9,6 +9,7 @@ import com.coldev.estore.domain.dto.ResponseObject;
 import com.coldev.estore.domain.dto.combo.request.ComboFilterRequest;
 import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.coldev.estore.domain.dto.combo.response.ComboGetDto;
+import com.coldev.estore.domain.entity.Combo;
 import com.coldev.estore.domain.service.ComboService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -132,5 +133,18 @@ public class ComboController {
         );
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        Combo deletedCombo = comboService.deleteCombo(id);
+        ComboGetDto deletedComboGetDto = comboService
+                .getComboDtoById(deletedCombo.getId(), ResponseLevel.ONE_LEVEL_DEPTH);
+        return ResponseEntity.ok(
+                ResponseObject.builder()
+                        .totalItems(1)
+                        .message(MessageDictionary.ACTION_SUCCESS)
+                        .data(deletedComboGetDto)
+                        .build()
+        );
+    }
 
 }

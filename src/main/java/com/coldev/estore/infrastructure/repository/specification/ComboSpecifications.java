@@ -3,14 +3,12 @@ package com.coldev.estore.infrastructure.repository.specification;
 import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.domain.entity.Combo;
 import com.coldev.estore.domain.entity.Product;
-import com.coldev.estore.domain.entity.ProductCombo;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Set;
 
 public class ComboSpecifications {
