@@ -1,12 +1,10 @@
 package com.coldev.estore.domain.dto.customerorder.request;
 
-import com.coldev.estore.common.constant.MessageDictionary;
 import com.coldev.estore.common.enumerate.OrderStatus;
 import com.coldev.estore.common.enumerate.PaymentMethod;
 import com.coldev.estore.domain.dto.customerorder.item.request.ComboItemPostDto;
 import com.coldev.estore.domain.dto.customerorder.item.request.CustomerOrderItemPostDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

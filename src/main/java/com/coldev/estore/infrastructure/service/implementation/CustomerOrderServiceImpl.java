@@ -22,7 +22,6 @@ import com.coldev.estore.domain.service.ProductService;
 import com.coldev.estore.infrastructure.repository.CustomerOrderItemRepository;
 import com.coldev.estore.infrastructure.repository.CustomerOrderRepository;
 import com.coldev.estore.infrastructure.repository.specification.CustomerOrderItemSpecifications;
-import com.coldev.estore.infrastructure.repository.specification.CustomerOrderSpecifications;
 import com.coldev.estore.infrastructure.repository.specification.ProductSpecifications;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -32,8 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Month;
-import java.time.Year;
 import java.util.*;
 
 

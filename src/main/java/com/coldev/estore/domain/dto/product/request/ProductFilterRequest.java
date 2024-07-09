@@ -2,11 +2,12 @@ package com.coldev.estore.domain.dto.product.request;
 
 
 import com.coldev.estore.common.enumerate.Category;
-import com.coldev.estore.common.enumerate.SortType;
 import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.domain.FilterRequest;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;

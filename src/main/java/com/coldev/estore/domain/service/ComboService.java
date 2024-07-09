@@ -29,4 +29,6 @@ public interface ComboService {
     List<ComboGetDto> getComboDtoList(ComboFilterRequest comboFilterRequest, ResponseLevel responseLevel);
 
     Page<Combo> getComboPage(ComboFilterRequest comboFilterRequest, Pageable pageable);
+
+    Combo deleteCombo(Long id);
 }

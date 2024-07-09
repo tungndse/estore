@@ -1,6 +1,5 @@
 package com.coldev.estore.infrastructure.repository.specification;
 
-import com.coldev.estore.domain.FilterRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 public class GeneralSpecifications {

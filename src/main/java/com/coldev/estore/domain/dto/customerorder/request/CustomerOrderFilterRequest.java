@@ -1,8 +1,6 @@
 package com.coldev.estore.domain.dto.customerorder.request;
 
-import com.coldev.estore.common.enumerate.Category;
 import com.coldev.estore.common.enumerate.OrderStatus;
-import com.coldev.estore.common.enumerate.Status;
 import com.coldev.estore.domain.FilterRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;

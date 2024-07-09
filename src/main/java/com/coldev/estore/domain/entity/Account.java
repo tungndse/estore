@@ -6,12 +6,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.Nationalized;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -47,8 +44,16 @@ public class Account {
     private String password;
 
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "address_longitude")
+    private Double addressLongitude;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "address_latitude")
+    private Double addressLatitude;
 
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "email", nullable = false)
@@ -81,6 +86,7 @@ public class Account {
     @Column(name = "created_at")
     @Builder.Default
     private Date createdAt = new Date();
+
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     @JsonManagedReference

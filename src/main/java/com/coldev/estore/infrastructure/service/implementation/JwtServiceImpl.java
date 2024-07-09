@@ -8,30 +8,18 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.coldev.estore.common.constant.MessageDictionary;
 import com.coldev.estore.config.security.user.EstoreUserPrincipal;
 import com.coldev.estore.domain.service.JwtService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Log4j2

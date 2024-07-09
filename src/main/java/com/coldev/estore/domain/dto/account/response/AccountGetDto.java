@@ -1,6 +1,7 @@
 package com.coldev.estore.domain.dto.account.response;
 
 import com.coldev.estore.common.enumerate.Status;
+import com.coldev.estore.domain.dto.address.AddressLngLatDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,10 @@ public class AccountGetDto implements Serializable {
     private String name;
     private String description;
     private String address;
+
+    @JsonProperty("address_lng_lat")
+    private AddressLngLatDto addressLngLatDto;
+
     private String email;
     private String phone;
     private Status status;

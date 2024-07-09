@@ -4,7 +4,7 @@ package com.coldev.estore.domain.dto.account.request;
 import com.coldev.estore.common.enumerate.AccountRole;
 import com.coldev.estore.config.validation.EmailValidation;
 import com.coldev.estore.config.validation.UsernameValidation;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.coldev.estore.domain.dto.address.AddressLngLatDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,9 +13,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
-
-import java.util.Date;
-import java.util.List;
 
 @Data
 @Builder
@@ -51,6 +48,10 @@ public class AccountPostDto {
 
     @Nullable
     private String address;
+
+    @Nullable
+    @JsonProperty("address_lng_lat")
+    private AddressLngLatDto addressLngLatDto;
 
     @Nullable
     @JsonProperty("media_id")

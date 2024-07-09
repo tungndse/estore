@@ -1,6 +1,5 @@
 package com.coldev.estore.infrastructure.repository.specification;
 
-import com.coldev.estore.domain.entity.ProductCombo;
 import com.coldev.estore.domain.entity.ProductMedia;
 import org.springframework.data.jpa.domain.Specification;
 

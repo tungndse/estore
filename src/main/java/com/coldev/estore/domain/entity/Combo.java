@@ -1,7 +1,6 @@
 package com.coldev.estore.domain.entity;
 
 import com.coldev.estore.common.enumerate.Status;
-import com.coldev.estore.domain.dto.combo.request.ComboPostDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

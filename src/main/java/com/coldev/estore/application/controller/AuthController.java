@@ -3,7 +3,6 @@ package com.coldev.estore.application.controller;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.coldev.estore.common.constant.MessageDictionary;
-import com.coldev.estore.config.exception.general.BadRequestException;
 import com.coldev.estore.domain.dto.auth.token.NewAccessTokenResponse;
 import com.coldev.estore.domain.dto.login.request.LoginRequest;
 import com.coldev.estore.domain.dto.login.response.LoginResponse;
