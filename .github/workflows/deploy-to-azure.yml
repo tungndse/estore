@@ -16,7 +16,7 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
-        java-version: '17'
+        java-version: '11' # Change to '17' if using Java 17
 
     - name: Build with Maven
       run: ./mvnw clean install -DskipTests
@@ -33,4 +33,4 @@ jobs:
           --service coldev-estore \
           --resource-group coldev-estore-rg \
           --artifact-path target/*.jar \
-          --distribution your-distribution-name # Add this line if required
+          --distribution jar # Specify 'jar' for JAR files
