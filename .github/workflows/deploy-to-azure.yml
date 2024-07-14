@@ -31,7 +31,8 @@ jobs:
         run: |
           az spring app deploy \
             --name estore \
-            --resource-group coldev-estore-rg \
             --service coldev-estore \
-            --artifact target/estore-0.0.1-SNAPSHOT.jar \
-            --runtime-version 17  # Specify Java 17 here
+            --resource-group coldev-estore-rg \
+            --source-path . \
+            --runtime-version Java_17 \
+            --allow-preview true  # If you're using any preview features
