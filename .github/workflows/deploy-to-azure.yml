@@ -35,4 +35,3 @@ jobs:
             --resource-group coldev-estore-rg \
             --source-path . \
             --runtime-version Java_17 \
-            --allow-preview true  # If you're using any preview features
