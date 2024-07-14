@@ -16,7 +16,7 @@ jobs:
     - name: Set up Java
       uses: actions/setup-java@v2
       with:
-        java-version: '17' # Change to '17' if using Java 17
+        java-version: '11' # Change to '17' if using Java 17
         distribution: 'adopt' # Specify the distribution (e.g., 'adopt', 'zulu', 'temurin')
 
     - name: Build with Maven
@@ -33,5 +33,4 @@ jobs:
           --name estore \
           --service coldev-estore \
           --resource-group coldev-estore-rg \
-          --artifact-path target/*.jar \
-          --distribution jar # Specify 'jar' for JAR files
+          --artifact-path target/*.jar
