@@ -129,14 +129,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseObject, HttpStatus.FORBIDDEN);
     }
 
-    /*@ExceptionHandler({InvalidEmailException.class})
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ResponseObject> invalidEmailExceptionHandler() {
-        ResponseObject responseObject = new ResponseObject<>();
-        responseObject.setMessage(MessageDictionary.WRONG_CREDENTIALS_INFORMATION);
-        return new ResponseEntity<>(responseObject, HttpStatus.UNAUTHORIZED);
-    }*/
-
     @ExceptionHandler({DataNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ResponseObject> dataNotFoundExceptionHandler() {
