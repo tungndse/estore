@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Log4j2
-@RequestMapping("/api/v1/vnpay")
+@RequestMapping("/api/v1")
 public class VnPayController {
 
 
