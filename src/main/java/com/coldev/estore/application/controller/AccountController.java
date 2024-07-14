@@ -27,12 +27,10 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
-    //final AccountMapper accountMapper;
 
     private final AuthService authService;
 
     public AccountController(AccountService accountService,
-                             //AccountMapper accountMapper,
                              AuthService authService) {
         this.accountService = accountService;
         //this.accountMapper = accountMapper;
